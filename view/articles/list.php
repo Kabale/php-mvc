@@ -7,6 +7,7 @@
     $articles = $result->fetchAll(PDO::FETCH_CLASS, "Article");
 ?>
 
+<?php ob_start(); ?>
 <button class="btn btn-primary" onclick="window.location.href='index.php?action=write'">Create Article</button>
 <br>
 <br>
@@ -32,3 +33,9 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+
+<?php 
+    $content = ob_get_clean(); 
+    $title = "List Articles";
+    include_once "./view/template.php";
+?>
