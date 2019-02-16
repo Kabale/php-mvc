@@ -12,8 +12,8 @@
     <title><?= $title ?></title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="/public/css/ionicons.min.css">
     <link rel="stylesheet" href="/public/css/bootstrap.css">
+    <!--<link rel="stylesheet" href="/public/css/style.css">-->
     
     <!--<script src="https://unpkg.com/ionicons@4.5.5/dist/ionicons.js"></script>-->
     <script src="/public/js/bootstrap.min.js"></script>

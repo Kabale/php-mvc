@@ -1,0 +1,35 @@
+
+body {
+    color: #3f414e;
+    font-family: "Avenir Next", Avenir, Segoe UI, "Helvetica Neue", helvetica, sans-serif;
+    text-align: left;
+    padding: 3em 0;
+}
+svg {
+    margin: 0.4em;
+    overflow: visible;
+}
+div { margin: 1em }
+.i-large div { font-size: 4em; margin: 0 }
+.i-medium div { font-size: 2em; margin: 0 }
+.i-small div { font-size: 1.5em; margin: 0 }
+.i-large,
+.i-medium,
+.i-small { max-width: 50em; margin: 0 auto 2em }
+h1 {
+    font-weight: normal;
+    line-height: 1;
+    font-size: 2em;
+}
+h3 {
+    font-size: 1em;
+    margin: 0 0 2em;
+    font-weight: 600;
+}
+hr {
+    border: 0 solid transparent;
+    border-bottom: 5px solid #ddd;
+    height: 0;
+    max-width: 48em;
+    margin: 4em auto;
+}

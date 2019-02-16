@@ -8,7 +8,7 @@
 ?>
 
 <?php ob_start(); ?>
-<button class="btn btn-primary" onclick="window.location.href='index.php?action=write'">Create Article</button>
+<button class="btn btn-primary" onclick="window.location.href='/articles/create'">Create Article</button>
 <br>
 <br>
 <table class="table table-striped">
@@ -25,9 +25,15 @@
             <td scope="row"><?= $article->getId()?></td>
             <td><?= $article->getTitle()?></td>
             <td>
-                <a title="read" href="?action=read&article=<?= $article->getId()?>"><ion-icon name="eye"></ion-icon></span></a>
-                <a title="write" href="?action=write&article=<?= $article->getId()?>"><ion-icon name="create"></ion-icon></a>
-                <a title="delete" href="?action=delete&article=<?= $article->getId()?>"><ion-icon name="trash"></ion-icon></a>
+                <a title="read" href="?action=read&article=<?= $article->getId()?>">
+                    <img src="/public/icons/eye.svg" alt="read" height="24px"/>
+                </a>
+                <a title="write" href="?action=write&article=<?= $article->getId()?>">
+                    <img src="/public/icons/edit.svg" alt="write" height="24px"/>
+                </a>
+                <a title="delete" href="?action=delete&article=<?= $article->getId()?>">
+                    <img src="/public/icons/trash.svg" alt="delete" height="24px"/>
+                </a>
             </td>
         </tr>
         <?php endforeach; ?>
