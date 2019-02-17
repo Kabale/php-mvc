@@ -1,13 +1,14 @@
 <?php    
+include_once "DbHelper.php";
+include_once "model/article.php";
+include_once "model/message.php";
 
 class ArticlesController
 {
     function createAction($filter = null)
     {        
-        include_once "model/article.php";
-        include_once "DbHelper.php";
-        $helper = new DbHelper();
         $article = new Article();
+        $helper = new DbHelper();
 
         if(isset($_POST["article"]))
         {
@@ -37,16 +38,16 @@ class ArticlesController
     }
 
     function readAction($filter = null)
-    {
-        include_once "DbHelper.php";
-        include_once "model/article.php";
-    
+    {   
+        $article = new Article();
         $helper = new DbHelper();
+
         if($filter != null) {
             $id = $filter;
             $result = $helper->get("articles", $id);
             $rows = $result->fetchAll();
         } else {
+            // REDIRECT USER TO LIST
             header('Location: /articles/list');
             die();
         }
@@ -56,11 +57,8 @@ class ArticlesController
 
     function updateAction($filter = null)
     {  
-        include_once "model/article.php";
-        include_once "DbHelper.php";
-
-        $helper = new DbHelper();
         $article = new Article();
+        $helper = new DbHelper();
 
         if(isset($_POST["article"]))
         {
@@ -75,10 +73,12 @@ class ArticlesController
                 $article->setCategory($_POST["category"]);
             
             // SEND OBJECT TO DATABASE
-            if(isset($_POST["id"]) && $_POST["id"] != "")
-                $helper->update("articles", $article, $_POST["id"]);
-            else
+            if($filter != "") {
+                $helper->update("articles", $article, $filter);
+            }
+            else {
                 $helper->add("articles", $article);
+            }
 
             // REDIRECT USER TO LIST
             header('Location: /articles/list');
@@ -101,33 +101,28 @@ class ArticlesController
 
     function deleteAction($filter = null)
     {
-        include_once("model/article.php");
-        include_once("DbHelper.php");
-
         $helper = new DbHelper();
 
         if($filter != null) {
             $id = $filter;
-            //TODO return true if success / false if danger
             $helper->delete("articles", $id);
+            //TODO: IF SUCCESSFULL DELETE
+            $message = new Message("Delete", "Article deleted with success", MessageStatus::Success);
+            $message->setMessage();
         } 
-    
-        session_start();
-        $_SESSION['message'] = 'Articles successfull delete';
-        $_SESSION['message_status'] = 'alert-success';
-        header("Location: /articles/list");
+
+        // REDIRECT USER TO LIST
+        header('Location: /articles/list');
+        die();
     }
 
     function listAction($filter = null)
-    {
-        include_once "DbHelper.php";
-        include_once "model/article.php";
-        
+    {      
         session_start();
-        $message = empty($_SESSION['message']) ? "" : $_SESSION['message'];
-        $messageStatus = empty($_SESSION['message_status']) ? "alert-info": $_SESSION['message_status'];
-
         $helper = new DbHelper();
+        $message = empty($_SESSION['message']) ? null : $_SESSION['message'];
+        if($message != null)        
+            $message->consumeMessage();
         $result = $helper->get("articles");
         $articles = $result->fetchAll(PDO::FETCH_CLASS, "Article");
     

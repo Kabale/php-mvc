@@ -31,6 +31,4 @@
         $controller = new DefaultController();
         $controller->error404Action();
     }
-
-
 ?>

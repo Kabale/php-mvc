@@ -24,9 +24,10 @@
     </header>
 
     <main role="main" class="container">
-        <?php if (isset($message) && $message != ""): ?>
-            <div id="globaleMsg" class="alert <?= $messageStatus ?> alert-dismissible fade show" role="alert">
-                <?= $message ?>
+        <?php if (isset($message) && $message != null): ?>
+            <div id="globaleMsg" class="alert <?= $message->getStatus() ?> alert-dismissible fade show" role="alert">
+                <strong><?= $message->getName() ?></strong>
+                <?= $message->getDescription() ?>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
