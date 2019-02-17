@@ -1,25 +1,11 @@
-<?php
-    include_once("DbHelper.php");
-    include_once("model/article.php");
-
-    $helper = new DbHelper();
-    if(isset($_GET["article"])) {
-        $id = $_GET["article"];
-        $result = $helper->get("articles", $id);
-        $rows = $result->fetchAll();
-    } else {
-        header('Location: index.php');
-        die();
-    }
-?>
+<?php ob_start(); ?>
 
 <div id="articles">
     <div class="d-block ">
         <label class="font-weight-bold" for="id">Id :</label>
         <span name="id"><?=$rows[0]['id']?></div>
     </div>
-    
-    
+ 
     <div class="d-block ">
         <label class="font-weight-bold" for="title">Title :</label>
         <span name="title"><?=$rows[0]['title']?></div>
@@ -45,3 +31,9 @@
         <span name="category"><?=$rows[0]['category']?></div>
     </div>
 </div>
+
+<?php
+    $title = "Read Article";
+    $content = ob_get_clean();
+    include_once  "./view/template.php";
+?>

@@ -1,13 +1,5 @@
-<?php
-    include_once("DbHelper.php");
-    include_once("model/article.php");
-
-    $helper = new DbHelper();
-    $result = $helper->get("articles");
-    $articles = $result->fetchAll(PDO::FETCH_CLASS, "Article");
-?>
-
-<?php ob_start(); ?>
+ <?php ob_start(); ?>
+</div>
 <button class="btn btn-primary" onclick="window.location.href='/articles/create'">Create Article</button>
 <br>
 <br>
@@ -25,13 +17,13 @@
             <td scope="row"><?= $article->getId()?></td>
             <td><?= $article->getTitle()?></td>
             <td>
-                <a title="read" href="?action=read&article=<?= $article->getId()?>">
+                <a title="read" href="/articles/read/<?= $article->getId()?>">
                     <img src="/public/icons/eye.svg" alt="read" height="24px"/>
                 </a>
-                <a title="write" href="?action=write&article=<?= $article->getId()?>">
+                <a title="write" href="/articles/update/<?= $article->getId()?>">
                     <img src="/public/icons/edit.svg" alt="write" height="24px"/>
                 </a>
-                <a title="delete" href="?action=delete&article=<?= $article->getId()?>">
+                <a title="delete" href="/articles/delete/<?= $article->getId()?>">
                     <img src="/public/icons/trash.svg" alt="delete" height="24px"/>
                 </a>
             </td>
