@@ -1,5 +1,5 @@
 <?php
-    abstract class BasicEnum {
+    abstract class BaseEnum {
         private static $constCacheArray = NULL;
 
         private static function getConstants() {

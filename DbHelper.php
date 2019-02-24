@@ -129,5 +129,20 @@
             }
         }
 
+        /**
+         * @param string table = name of the SQL table
+         */
+        public function getFieldInformation($table)
+        {
+            try
+            {
+                $sql = "SELECT IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, COLUMN_NAME, COLUMN_DEFAULT, EXTRA FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$table'";
+                return $this->db->query($sql);
+            } 
+            catch(PDOException $e) {
+                echo $sql . "<br>" . $e->getMessage();
+            }
+        }
+
     }
 ?>

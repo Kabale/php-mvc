@@ -1,14 +1,14 @@
 <?php
 
-    Class Article {
+    class Article {
 
         private $id;
-        private $title = "";
-        private $content = "";
-        private $author = "";
-        private $creationDate = "";
-        private $updateDate = "";
-        private $category = "";
+        private $title;
+        private $content;
+        private $author;
+        private $creationDate;
+        private $updateDate;
+        private $category;
         
         /// GETTERS
         public function getId(): ?int
@@ -17,19 +17,45 @@
         }
         public function getTitle(): string
         {
-            return $this->title;
+            if($this->title == null)
+                return "";
+            else
+                return $this->title;
         }
         public function getContent(): string
         {
-            return $this->content;
+            if($this->content == null)
+                return "";
+            else
+                return $this->content;
         }
         public function getAuthor(): string
         {
-            return $this->author;
+            if($this->author == null)
+                return "";
+            else
+                return $this->author;
         }
         public function getCreationDate(): string
         {
-            return $this->creationDate;
+            if($this->creationDate == null)
+                return "";
+            else
+                return $this->creationDate;
+        }
+        public function getUpdateDate(): string
+        {
+            if($this->updateDate == null)
+                return "";
+            else
+                return $this->updateDate;
+        }
+        public function getCategory(): string
+        {
+            if($this->category == null)
+                return "";
+            else
+                return $this->category;
         }
         
         /// SETTERS
@@ -44,14 +70,6 @@
         public function setAuthor(string $author): void
         {
             $this->author = $author;
-        }
-        public function getUpdateDate(): string
-        {
-            return $this->updateDate;
-        }
-        public function getCategory(): string
-        {
-            return $this->category;
         }
         public function setCategory(string $category): void
         {

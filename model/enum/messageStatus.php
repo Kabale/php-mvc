@@ -1,7 +1,7 @@
 <?php
-    include_once "./model/enum/basic.php";
+    include_once "./model/enum/baseEnum.php";
 
-    abstract class MessageStatus extends BasicEnum
+    abstract class MessageStatus extends BaseEnum
     {
         const Info = "alert-info";
         const Success = "alert-success";

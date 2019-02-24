@@ -2,7 +2,7 @@
     $request = ltrim($_SERVER['REQUEST_URI'], '/');
     $array = explode('/', $request, 3);
     
-    $controllerFile = count($array) > 0 && $request != "" ? "./controller/". strtolower($array[0]).".php" : "./controller/default.php";
+    $controllerFile = count($array) > 0 && $request != "" ? "./controller/".strtolower($array[0]).".php" : "./controller/default.php";
     $controllerClass = count($array) > 0 && $request != "" ? ucfirst(strtolower($array[0]))."Controller" : "DefaultController";
     $controllerAction = count($array) > 1 ? strtolower($array[1])."Action" : "defaultAction";
     $controllerFilter = count($array) > 2 ? strtolower($array[2]) : "";

@@ -19,4 +19,9 @@
             $title = "Error 405";
             include_once "./view/error/405.php";
         }
+
+        function testDbAction()
+        {
+            include_once "./testdb.php";
+        }
     }

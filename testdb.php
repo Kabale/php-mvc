@@ -1,6 +1,6 @@
 <?php
     include 'DbHelper.php';
-    include 'Article.php';
+    include 'model/Article.php';
 
     // TEST DATABASE HELPER
     $helper = new DbHelper();
@@ -52,6 +52,21 @@
     // REMOVE LAST ARTICLE
     echo "<br><br>REMOVE LAST ARTICLE";
     $helper->delete("articles", $id);
-    $helper = null;
 
+    //SHOW ARTICLES INFO
+    echo "<br><br>SHOW ARTICLES INFO";
+    $result = $helper->getFieldInformation("articles");
+    $rows = $result->fetchAll();
+
+    echo "<table style='border 1 px solid black'><tr><th>Column Name</th><th>Nullable</th><th>data type</th><th>Max length</th><th>Default</th><th>Extra</th></tr>";
+    foreach($rows as $row)
+    {
+        echo "<tr><td>".$row['COLUMN_NAME']."</td>";
+        echo "<td>".$row['IS_NULLABLE']."</td>";
+        echo "<td>".$row['DATA_TYPE']."</td>";
+        echo "<td>".$row['CHARACTER_MAXIMUM_LENGTH']."</td>";
+        echo "<td>".$row['COLUMN_DEFAULT']."</td>";
+        echo "<td>".$row['EXTRA']."</td></tr>";
+    }
+    echo "</table>";
 ?>

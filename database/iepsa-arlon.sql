@@ -6,14 +6,14 @@ USE iepsa_arlon;
 
 -- CREATE USER AND GRANT ACCESS TO DATABASE
 CREATE USER 'iepsa_user'@'localhost' IDENTIFIED BY 'ZHeg5X0Ti12244Fk';
-GRANT SELECT, INSERT, DELETE ON iepsa_arlon.* TO 'iepsa_user'@'localhost';
+GRANT SELECT, INSERT, DELETE, UPDATE ON iepsa_arlon.* TO 'iepsa_user'@'localhost';
 FLUSH PRIVILEGES;
 
 
 -- CREATE TABLE
 CREATE TABLE articles(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(100),
+    title VARCHAR(100) NOT NULL,
     content VARCHAR(2000),
     author VARCHAR(100),
     category VARCHAR(255),
@@ -23,7 +23,8 @@ CREATE TABLE articles(
 
 CREATE TABLE users(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    login VARCHAR(100),
+    firstname VARCHAR(100),
+    lastname VARCHAR(100),
     password VARCHAR(100),
     email VARCHAR(150),
     creationDate DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -43,7 +44,9 @@ INSERT INTO articles(title, content, author, category) VALUES("Nam a eros at tel
 INSERT INTO articles(title, content, author, category) VALUES("Etiam luctus ipsum nec nulla bibendumm", "Sed imperdiet metus at justo varius, et lobortis nunc pulvinar. Integer sit amet purus eu dui auctor efficitur. Sed rhoncus ultricies posuere. Fusce blandit ut eros et ultricies. Cras non nisi non lectus finibus ultrices id nec dolor. Morbi eu purus nec dui volutpat congue eu sit amet est. Praesent hendrerit dignissim finibus. Pellentesque neque tortor, cursus vitae vehicula eu, volutpat vitae ipsum. Donec bibendum ipsum in orci commodo, nec tincidunt nisl eleifend. Cras sed sem justo. Morbi vulputate dui sed arcu semper elementum. Morbi eu dignissim lorem.", "Jules César", "News");
 INSERT INTO articles(title, content, author, category) VALUES("Phasellus id est iaculis", "Proin eleifend dui id posuere rutrum. Praesent eget laoreet risus, sed lobortis nunc. Integer finibus ipsum at pharetra bibendum. Suspendisse at orci vulputate, auctor massa a, hendrerit mi. Aliquam id condimentum massa. Vivamus tempus cursus urna, ultrices vestibulum eros. Maecenas vel justo egestas lacus dignissim lacinia eget non nunc. Nullam viverra nunc vel blandit pharetra. Morbi mattis euismod dignissim. Curabitur eleifend elementum ipsum, in ultrices ipsum congue id. Praesent sodales, justo eget molestie imperdiet, lacus felis scelerisque ligula, in dapibus nisl lectus efficitur purus. Vestibulum tempor tortor est, sit amet congue dui suscipit nec. Praesent sed mollis justo. Praesent sit amet vestibulum felis. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec lacinia magna mi, et vestibulum purus vestibulum in.", "Jules César", "Synopsis");
 
-INSERT INTO users(login, password, email) VALUES("Kabale",SHA2("Test1234", 512),"kabale@gmail.com");
+INSERT INTO users(lastname, firstname, password, email) VALUES("Robert","Grey",SHA2("Test1234", 512),"robert.grey@gmail.com");
+INSERT INTO users(lastname, firstname, password, email) VALUES("John","Doe",SHA2("Test1234", 512),"john.doe@gmail.com");
+INSERT INTO users(lastname, firstname, password, email) VALUES("Diane","Black",SHA2("Test1234", 512),"diane.black@gmail.com");
+INSERT INTO users(lastname, firstname, password, email) VALUES("Mortimer","Schandeler",SHA2("Test1234", 512),"kabale@gmail.com");
 
-UPDATE articles SET author = "Néron" WHERE id = 9
 
