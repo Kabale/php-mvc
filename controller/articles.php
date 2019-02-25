@@ -45,7 +45,11 @@ class ArticlesController
         if($filter != null) {
             $id = $filter;
             $result = $helper->get("articles", $id);
-            $rows = $result->fetchAll();
+            $articles = $result->fetchAll(PDO::FETCH_CLASS, "Article");
+
+            if(count($articles) > 0)
+                $article = $articles[0];
+                
         } else {
             // REDIRECT USER TO LIST
             header('Location: /articles/list');

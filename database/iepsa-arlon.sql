@@ -26,7 +26,7 @@ CREATE TABLE users(
     firstname VARCHAR(100),
     lastname VARCHAR(100),
     password VARCHAR(100),
-    email VARCHAR(150),
+    email VARCHAR(150) UNIQUE,
     creationDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     updateDate DATETIME ON UPDATE CURRENT_TIMESTAMP
 );

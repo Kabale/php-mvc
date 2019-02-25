@@ -3,32 +3,32 @@
 <div id="articles">
     <div class="d-block ">
         <label class="font-weight-bold" for="id">Id :</label>
-        <span name="id"><?=$rows[0]['id']?></div>
+        <span name="id"><?=$article->getId()?></div>
     </div>
  
     <div class="d-block ">
         <label class="font-weight-bold" for="title">Title :</label>
-        <span name="title"><?=$rows[0]['title']?></div>
+        <span name="title"><?=$article->getTitle()?></div>
     </div>
     <div class="d-block ">
         <label class="font-weight-bold" for="content">Content :</label>
-        <span name="content"><?=$rows[0]['content']?></div>
+        <span name="content"><?=$article->getContent()?></div>
     </div>
     <div class="d-block ">
         <label class="font-weight-bold" for="author">Author :</label>
-        <span name="author"><?=$rows[0]['author']?></div>
+        <span name="author"><?=$article->getAuthor()?></div>
     </div>
     <div class="d-block ">
         <label class="font-weight-bold" for="creationDate">Creation Date :</label>
-        <span name="creationDate"><?=$rows[0]['creationDate']?></div>
+        <span name="creationDate"><?=$article->getCreationDate()?></div>
     </div>
     <div class="d-block ">
         <label class="font-weight-bold" for="updateDate">Update Date :</label>
-        <span name="updateDate"><?=$rows[0]['updateDate']?></div>
+        <span name="updateDate"><?=$article->getUpdateDate()?></div>
     </div>
     <div class="d-block ">
         <label class="font-weight-bold" for="category">Category :</label>
-        <span name="category"><?=$rows[0]['category']?></div>
+        <span name="category"><?=$article->getCategory()?></div>
     </div>
 </div>
 
