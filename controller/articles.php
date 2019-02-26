@@ -34,6 +34,7 @@ class ArticlesController
         }
 
         $title = "Create Article";
+        $controller = "articles";
         include_once "./view/articles/create.php";
     }
 
@@ -56,6 +57,7 @@ class ArticlesController
             die();
         }
 
+        $controller = "articles";
         include_once "./view/articles/read.php";
     }
 
@@ -99,6 +101,7 @@ class ArticlesController
                 $article = $articles[0];
         }
 
+        $controller = "articles";
         $title = "Update Article";
         include_once "./view/articles/create.php";
     }
@@ -129,7 +132,7 @@ class ArticlesController
             $message->consumeMessage();
         $result = $helper->get("articles");
         $articles = $result->fetchAll(PDO::FETCH_CLASS, "Article");
-    
+        $controller = "articles";
         include_once "./view/articles/list.php";
     }
 

@@ -32,8 +32,8 @@ class UsersController
             header('Location: /users/list');
             die();
         }
-
-        $firstname = "Create User";
+        $controller = "users";
+        $title = "Create User";
         include_once "./view/users/create.php";
     }
 
@@ -98,7 +98,7 @@ class UsersController
             if(count($users) > 0)
                 $user = $users[0];
         }
-
+        $controller = "users";
         $title = "Update User";
         include_once "./view/users/create.php";
     }
@@ -129,7 +129,7 @@ class UsersController
             $message->consumeMessage();
         $result = $helper->get("users");
         $users = $result->fetchAll(PDO::FETCH_CLASS, "User");
-    
+        $controller = "users";
         include_once "./view/users/list.php";
     }
 

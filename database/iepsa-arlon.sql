@@ -27,8 +27,9 @@ CREATE TABLE users(
     lastname VARCHAR(100),
     password VARCHAR(100),
     email VARCHAR(150) UNIQUE,
+    isEnabled BOOLEAN DEFAULT TRUE,
     creationDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updateDate DATETIME ON UPDATE CURRENT_TIMESTAMP
+    updateDate DATETIME ON UPDATE CURRENT_TIMESTAMP,
 );
 
 
@@ -46,7 +47,8 @@ INSERT INTO articles(title, content, author, category) VALUES("Phasellus id est 
 
 INSERT INTO users(lastname, firstname, password, email) VALUES("Robert","Grey",SHA2("Test1234", 512),"robert.grey@gmail.com");
 INSERT INTO users(lastname, firstname, password, email) VALUES("John","Doe",SHA2("Test1234", 512),"john.doe@gmail.com");
-INSERT INTO users(lastname, firstname, password, email) VALUES("Diane","Black",SHA2("Test1234", 512),"diane.black@gmail.com");
-INSERT INTO users(lastname, firstname, password, email) VALUES("Mortimer","Schandeler",SHA2("Test1234", 512),"kabale@gmail.com");
+INSERT INTO users(lastname, firstname, password, email) VALUES("Francis","Black",SHA2("Test1234", 512),"francis.black@gmail.com");
+INSERT INTO users(lastname, firstname, password, email) VALUES("Philip","Mortimer",SHA2("Test1234", 512),"philip.mortmimer@gmail.com");
+INSERT INTO users(lastname, firstname, password, email) VALUES("Adèle","Blanc-Sec",SHA2("Test1234", 512),"adele.bs@gmail.com");
 
 

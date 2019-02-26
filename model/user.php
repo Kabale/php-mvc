@@ -7,6 +7,7 @@ class User
     private $lastname;
     private $email;
     private $password;
+    private $isEnabled = true;
 
     //GETTER
     function getId() {
@@ -24,6 +25,9 @@ class User
     function getPassword() {
         return $this->password;
     }
+    function getIsEnabled() {
+        return $this->isEnabled;
+    }
 
     //SETTER
     function setId($id) {
@@ -40,6 +44,9 @@ class User
     }
     function setPassword($password) {
         $this->password = $password;
+    }
+    function setIsEnabled($isEnabled){
+        $this->isEnabled = $isEnabled;
     }
 
 }
