@@ -144,5 +144,22 @@
             }
         }
 
+        /**
+         * @param string username 
+         * @param string password 
+         */
+        public function isValidUser($username, $password) : bool
+        {
+            $sql ="SELECT COUNT(id) as count FROM users WHERE LOWER(username) = LOWER('$username') AND password = SHA2('$password', 256)";
+            $result = $this->db->query($sql);
+            $rows = $result->fetchAll();
+            if(((int)$rows[0]["count"]) > 0)
+            {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
     }
 ?>

@@ -1,5 +1,5 @@
 <?php
-    include_once "./model/enum/baseEnum.php";
+    include_once "./model/enum/_enum.php";
 
     abstract class MessageStatus extends BaseEnum
     {

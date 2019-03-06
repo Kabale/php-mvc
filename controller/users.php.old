@@ -5,6 +5,7 @@ include_once "model/message.php";
 
 class UsersController
 {
+
     function createAction($filter = null)
     {        
         $user = new User();

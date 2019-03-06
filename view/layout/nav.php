@@ -5,14 +5,15 @@
   </button>
 
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item <?php if($controller == "articles"): ?>active<?php endif ?>">
-        <a class="nav-link" href="/articles" >Articles</a>
-      </li>
-      <li class="nav-item <?php if($controller == "users"): ?>active<?php endif ?>">
-        <a class="nav-link" href="/users">Users</a>
-      </li>
-    </ul>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item <?php if($controller == "articles"): ?>active<?php endif ?>">
+          <a class="nav-link" href="/articles" >Articles</a>
+        </li>
+      </ul>
+      <form class="form-inline mt-2 mt-md-0">
+        <button class="btn btn-outline-<?php if(!ISSET($_SESSION["authentication"]) || $_SESSION["authentication"] == null): ?>success<?php else:?>warning<?php endif?> my-2 my-sm-0" type="button" onclick="window.location.href ='/authentication/<?php if(!ISSET($_SESSION["authentication"]) || $_SESSION["authentication"] == null): ?>login<?php else:?>logout<?php endif?>';">
+        <?php if(!ISSET($_SESSION["authentication"]) || $_SESSION["authentication"] == null): ?>Login<?php else:?>Logout<?php endif?></button>
+      </form>
   </div>
 </nav>
 <br>

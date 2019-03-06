@@ -21,16 +21,25 @@ CREATE TABLE articles(
     updateDate DATETIME ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE users(
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    firstname VARCHAR(100),
-    lastname VARCHAR(100),
-    password VARCHAR(100),
-    email VARCHAR(150) UNIQUE,
+CREATE TABLE users (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(256) NOT NULL,
     isEnabled BOOLEAN DEFAULT TRUE,
     creationDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updateDate DATETIME ON UPDATE CURRENT_TIMESTAMP,
+    updateDate DATETIME ON UPDATE CURRENT_TIMESTAMP
 );
+
+-- CREATE TABLE users(
+--    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+--    firstname VARCHAR(100),
+--    lastname VARCHAR(100),
+--    password VARCHAR(256),
+--    email VARCHAR(150) UNIQUE,
+--    isEnabled BOOLEAN DEFAULT TRUE,
+--    creationDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+--    updateDate DATETIME ON UPDATE CURRENT_TIMESTAMP
+-- );
 
 
 -- INSERT SOME VALUES
@@ -45,10 +54,15 @@ INSERT INTO articles(title, content, author, category) VALUES("Nam a eros at tel
 INSERT INTO articles(title, content, author, category) VALUES("Etiam luctus ipsum nec nulla bibendumm", "Sed imperdiet metus at justo varius, et lobortis nunc pulvinar. Integer sit amet purus eu dui auctor efficitur. Sed rhoncus ultricies posuere. Fusce blandit ut eros et ultricies. Cras non nisi non lectus finibus ultrices id nec dolor. Morbi eu purus nec dui volutpat congue eu sit amet est. Praesent hendrerit dignissim finibus. Pellentesque neque tortor, cursus vitae vehicula eu, volutpat vitae ipsum. Donec bibendum ipsum in orci commodo, nec tincidunt nisl eleifend. Cras sed sem justo. Morbi vulputate dui sed arcu semper elementum. Morbi eu dignissim lorem.", "Jules César", "News");
 INSERT INTO articles(title, content, author, category) VALUES("Phasellus id est iaculis", "Proin eleifend dui id posuere rutrum. Praesent eget laoreet risus, sed lobortis nunc. Integer finibus ipsum at pharetra bibendum. Suspendisse at orci vulputate, auctor massa a, hendrerit mi. Aliquam id condimentum massa. Vivamus tempus cursus urna, ultrices vestibulum eros. Maecenas vel justo egestas lacus dignissim lacinia eget non nunc. Nullam viverra nunc vel blandit pharetra. Morbi mattis euismod dignissim. Curabitur eleifend elementum ipsum, in ultrices ipsum congue id. Praesent sodales, justo eget molestie imperdiet, lacus felis scelerisque ligula, in dapibus nisl lectus efficitur purus. Vestibulum tempor tortor est, sit amet congue dui suscipit nec. Praesent sed mollis justo. Praesent sit amet vestibulum felis. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec lacinia magna mi, et vestibulum purus vestibulum in.", "Jules César", "Synopsis");
 
-INSERT INTO users(lastname, firstname, password, email) VALUES("Robert","Grey",SHA2("Test1234", 512),"robert.grey@gmail.com");
-INSERT INTO users(lastname, firstname, password, email) VALUES("John","Doe",SHA2("Test1234", 512),"john.doe@gmail.com");
-INSERT INTO users(lastname, firstname, password, email) VALUES("Francis","Black",SHA2("Test1234", 512),"francis.black@gmail.com");
-INSERT INTO users(lastname, firstname, password, email) VALUES("Philip","Mortimer",SHA2("Test1234", 512),"philip.mortmimer@gmail.com");
-INSERT INTO users(lastname, firstname, password, email) VALUES("Adèle","Blanc-Sec",SHA2("Test1234", 512),"adele.bs@gmail.com");
+-- INSERT INTO users(lastname, firstname, password, email) VALUES("Robert","Grey",SHA2("Test1234", 256),"robert.grey@gmail.com");
+-- INSERT INTO users(lastname, firstname, password, email) VALUES("John","Doe",SHA2("Test1234", 256),"john.doe@gmail.com");
+-- INSERT INTO users(lastname, firstname, password, email) VALUES("Francis","Black",SHA2("Test1234", 256),"francis.black@gmail.com");
+-- INSERT INTO users(lastname, firstname, password, email) VALUES("Philip","Mortimer",SHA2("Test1234", 256),"philip.mortmimer@gmail.com");
+-- INSERT INTO users(lastname, firstname, password, email) VALUES("Adèle","Blanc-Sec",SHA2("Test1234", 256),"adele.bs@gmail.com");
+
+INSERT INTO users(username, password) VALUES("Robert",SHA2("Test1234", 256));
+INSERT INTO users(username, password) VALUES("John",SHA2("Test1234", 256));
+INSERT INTO users(username, password) VALUES("Francis",SHA2("Test1234", 256));
+INSERT INTO users(username, password) VALUES("Philip",SHA2("Test1234", 256));
 
 

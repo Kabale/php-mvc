@@ -1,6 +1,7 @@
 <?php
+    include_once "./model/_model.php";
 
-    class Article {
+    class Article extends BaseModel {
 
         private $id;
         private $title;
@@ -59,6 +60,10 @@
         }
         
         /// SETTERS
+        public function setId(int $id): void
+        {
+            $this->id = $id;
+        }
         public function setTitle(string $title): void
         {
             $this->title = $title;

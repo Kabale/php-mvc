@@ -69,4 +69,21 @@
         echo "<td>".$row['EXTRA']."</td></tr>";
     }
     echo "</table>";
+
+    //TEST FILTER
+    echo "<br><br>TEST FILTER SET<br>";
+    include_once "./model/filter.php";
+    $filter = new Filter();
+    $filter->setFilter("test", "Ceci est un test");
+    $filter->setFilter("page", "30");
+    $filter->setFilter("nbrArt", "10");
+    $filter->setController("home");
+    echo $filter->getController();
+    echo "<br>";
+    echo $filter->getFilter("page");
+    echo "<br>";
+    echo $filter->getFilter("test2");
+    echo "<br>";
+    print_r($filter);
+
 ?>

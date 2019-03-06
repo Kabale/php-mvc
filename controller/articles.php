@@ -6,7 +6,7 @@ include_once "model/message.php";
 class ArticlesController
 {
     function createAction($filter = null)
-    {        
+    {       
         $article = new Article();
         $helper = new DbHelper();
 
@@ -23,10 +23,7 @@ class ArticlesController
                 $article->setCategory($_POST["category"]);
             
             // SEND OBJECT TO DATABASE
-            if(isset($_POST["id"]) && $_POST["id"] != "")
-                $helper->update("articles", $article, $_POST["id"]);
-            else
-                $helper->add("articles", $article);
+            $article->save();
 
             // REDIRECT USER TO LIST
             header('Location: /articles/list');
@@ -69,6 +66,9 @@ class ArticlesController
         if(isset($_POST["article"]))
         {
             // CREATE OBJECT
+            // TODO GET INT FROM FILTER AND CHECK IF EXISTING OBJECT
+            if($filter != null)
+                $article->setId($filter);
             if(isset($_POST["title"]))
                 $article->setTitle($_POST["title"]);
             if(isset($_POST["content"]))
@@ -79,12 +79,7 @@ class ArticlesController
                 $article->setCategory($_POST["category"]);
             
             // SEND OBJECT TO DATABASE
-            if($filter != "") {
-                $helper->update("articles", $article, $filter);
-            }
-            else {
-                $helper->add("articles", $article);
-            }
+            $article->save();
 
             // REDIRECT USER TO LIST
             header('Location: /articles/list');
@@ -108,15 +103,9 @@ class ArticlesController
 
     function deleteAction($filter = null)
     {
-        $helper = new DbHelper();
-
-        if($filter != null) {
-            $id = $filter;
-            $helper->delete("articles", $id);
-            //TODO: IF SUCCESSFULL DELETE
-            $message = new Message("Delete", "Article deleted with success", MessageStatus::Success);
-            $message->setMessage();
-        } 
+        $article = new Article();
+        $article->setId($filter);
+        $article->delete();
 
         // REDIRECT USER TO LIST
         header('Location: /articles/list');
