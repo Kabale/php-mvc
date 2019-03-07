@@ -5,7 +5,7 @@
         private $errorMessage;
         private $isValid;
 
-        function __constructor($field, $errorMessage = "", $isValid = true)
+        function __construct($field, $errorMessage = "", $isValid = true)
         {
             $this->field = $field;
             $this->errorMessage = $errorMessage;

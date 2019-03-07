@@ -73,17 +73,38 @@
     //TEST FILTER
     echo "<br><br>TEST FILTER SET<br>";
     include_once "./model/filter.php";
-    $filter = new Filter();
-    $filter->setFilter("test", "Ceci est un test");
-    $filter->setFilter("page", "30");
-    $filter->setFilter("nbrArt", "10");
-    $filter->setController("home");
+
+    echo "<br><br>article/update/1?page=10&article=20";
+    $filter = new Filter("article/update/1?page=10&article=20");
+    echo "<br>controller : ";
     echo $filter->getController();
-    echo "<br>";
+    echo "<br>action : ";
+    echo $filter->getAction();
+    echo "<br>id : ";
+    echo $filter->getId();
+    echo "<br>filter[page] : ";
     echo $filter->getFilter("page");
-    echo "<br>";
-    echo $filter->getFilter("test2");
-    echo "<br>";
-    print_r($filter);
+
+    echo "<br><br>article/list?page=10&article=10";
+    $filter = new Filter("article/list?page=10&article=10");
+    echo "<br>controller : ";
+    echo $filter->getController();
+    echo "<br>action : ";
+    echo $filter->getAction();
+    echo "<br>id : ";
+    echo $filter->getId();
+    echo "<br>filter[page] : ";
+    echo $filter->getFilter("page");
+
+    echo "<br>empty<br>";
+    $filter = new Filter("");
+    echo "<br>controller : ";
+    echo $filter->getController();
+    echo "<br>action : ";
+    echo $filter->getAction();
+    echo "<br>id : ";
+    echo $filter->getId();
+    echo "<br>filter[page] : ";
+    echo $filter->getFilter("page");
 
 ?>

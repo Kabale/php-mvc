@@ -3,6 +3,13 @@
 
     class BaseModel
     {
+        private $context = null;
+
+        function __construct($filter)
+        {
+            $context->setFilter($filter);
+        }
+
         function save()
         {
             $dbHelper = new DbHelper();
