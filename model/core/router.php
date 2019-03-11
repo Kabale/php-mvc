@@ -1,5 +1,5 @@
 <?php 
-    include_once 'model/filter.php';
+    include_once './model/core/filter.php';
 
     class Router 
     {

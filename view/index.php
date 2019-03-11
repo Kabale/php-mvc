@@ -7,5 +7,5 @@
     </div>
 <?php
     $content = ob_get_clean();
-    include_once "template.php";
+    include_once "./view/template.php";
 ?>

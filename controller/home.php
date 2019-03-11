@@ -1,5 +1,5 @@
 <?php
-    include_once "./model/message.php";
+    include_once "./model/core/message.php";
     
     class HomeController
     {

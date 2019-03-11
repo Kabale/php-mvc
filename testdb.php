@@ -1,7 +1,7 @@
 <?php
-    include 'DbHelper.php';
-    include 'model/Article.php';
-
+    include './helper/DbHelper.php';
+    include './model/Article.php';
+/*
     // TEST DATABASE HELPER
     $helper = new DbHelper();
 
@@ -106,5 +106,18 @@
     echo $filter->getId();
     echo "<br>filter[page] : ";
     echo $filter->getFilter("page");
+*/
+    // TEST MAP HELPER FUNCTION
+    echo "<br><br>TEST MAP HELPER FUNCTION <br>";
+    include_once "./helper/MapHelper.php";
+    $mapHelper = new MapHelper();
+    // Arlon lat 49.6833, lon 5.8167
+    // Martelange lat lon 49.83333, 5.7333
+    $result = $mapHelper->calculateDistance(49.6833, 5.8167, 49.8333, 5.7333);
+    echo "<br>distance between Arlon and Martelange : ". $result ."km<br>";
+    $test = "Route d'Arlon 2, Windhof, Luxembourg";
+    echo "<br>Coordonnes of $test =<br>";
+    print_r($mapHelper->getCoordonees($test));
 
+    
 ?>

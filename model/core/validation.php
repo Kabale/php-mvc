@@ -1,6 +1,6 @@
 <?php
-    include_once "DbHelper.php";
-    include_once "/model/error.php";
+    include_once "./helper/DbHelper.php";
+    include_once "./model/core/error.php";
 
     class validation
     {

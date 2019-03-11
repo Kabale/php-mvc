@@ -1,13 +1,12 @@
 <?php
-    include_once "DbHelper.php";
+    include_once "./helper/DbHelper.php";
 
     class BaseModel
     {
-        private $context = null;
 
         function __construct($filter)
         {
-            $context->setFilter($filter);
+            $this->__constructcontext->setFilter($filter);
         }
 
         function save()
