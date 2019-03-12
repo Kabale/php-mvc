@@ -9,29 +9,23 @@
     <meta name="description" content="">
     <meta name="author" content="">
     
-    <title><?= $title ?></title>
+    <title><?= $this->getContext()->getTitle() ?></title>
 
     <!-- Bootstrap core CSS -->
     <link rel="icon" href="/public/img/favicon.ico" />
-    <link rel="stylesheet" href="/public/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/mapquest.css"/>
     
     <script src="/public/js/jquery3.3.1.min.js"></script>
     <script src="/public/js/bootstrap.min.js"></script>
+    <script src="/public/js/mapquest.js"></script>
 </head>
 <body>
     <header>
-        <?php include_once("layout/nav.php"); ?>
+        <?php include_once("layout/navigation.php"); ?>
     </header>
     <main role="main" class="container">
-        <?php if (isset($message) && $message != null): ?>
-            <div id="globaleMsg" class="alert <?= $message->getStatus() ?> alert-dismissible fade show" role="alert">
-                <strong><?= $message->getName() ?></strong>
-                <?= $message->getDescription() ?>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        <?php endif?>
+        <?php include_once("layout/message.php"); ?>
         <div id="content">
            <?= $content ?>            
         </div>

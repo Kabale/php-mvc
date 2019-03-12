@@ -18,8 +18,6 @@
 </form>
 
 <?php
-    $controller = "authentication";
-    $title = "Login";
     $content = ob_get_clean();
     include_once "./view/template.php";
 ?>

@@ -1,15 +1,18 @@
 <?php
+    include_once "./controller/_controller.php";
     include_once "./model/user.php";
-    include_once "./model/message.php";
+    include_once "./model/core/message.php";
 
-    class AuthenticationController {
+    class AuthenticationController extends BaseController 
+    {
 
         function defaultAction() {
+
             header('Location: /home');
             die();
         }
 
-        function resetAction($filter) {
+        function resetAction() {
             $new_password  = "";
             $confirm_password = "";
             $new_password_err  = "";
@@ -17,9 +20,8 @@
             include_once "./view/authentication/reset.php";
         }
 
-        function logupAction($filter) {
-            $controller = "authentication";
-            $title = "Logup";
+        function logupAction() {
+
             $password_err = "";
             $username_err = "";
             $confirm_password_err = "";
@@ -29,20 +31,9 @@
             include_once "./view/authentication/logup.php";
         }
 
-        function loginAction($filter) {
-            if(!isset($_SESSION)){session_start();}
-
-            $message = empty($_SESSION['message']) ? null : $_SESSION['message'];
-            if($message != null)        
-                $message->consumeMessage();
-
-            $controller = "authentication";
-            // Open login form 
-            
-            // Retrieve $lastUrl parameter
+        function loginAction() {
+          
             $lastUrl = "";
-
-            $title = "Login";
             $username ="";
             $password_err = "";
             $username_err = "";
@@ -66,6 +57,8 @@
                 {
                     $message = new Message("", "Invalid username or password", MessageStatus::Error);
                     $message->setMessage();
+                    header('Location: /home');
+                    die();
                 }
             }
             else if (isset($_POST["username"]) && isset($_POST["password"]))
@@ -83,7 +76,7 @@
             include_once "./view/authentication/login.php";
         }
         
-        function logoutAction($filter) {
+        function logoutAction() {
             $message = new Message("", "You have been logged out successfully.", MessageStatus::Success);
             $message->setMessage();
 

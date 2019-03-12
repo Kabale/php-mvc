@@ -1,37 +1,31 @@
 <?php
-    include_once "./model/core/message.php";
+    include_once "./controller/_controller.php";
     
-    class HomeController
+    class HomeController extends BaseController 
     {
-        function defaultAction($filter)
+        function defaultAction()
         {
-            if(!isset($_SESSION)){session_start();}
-            $message = empty($_SESSION['message']) ? null : $_SESSION['message'];
-            if($message != null)        
-                $message->consumeMessage();
-                
-            $title = "Welcome Page";
-            $controller = "home";
+            $ctxt = $this->getContext();
             include_once "./view/index.php";
         }
 
-        function error404Action($filter)
+        function error404Action()
         {
-            $title = "Error 404";
-            $controller = "home";
+            $ctxt = $this->getContext();
+            $ctxt->setTitle("Error 404");
             include_once "./view/error/404.php";
         }
 
-        function error405Action($filter)
+        function error405Action()
         {
-            $title = "Error 405";
-            $controller = "home";
+            $ctxt = $this->getContext();
+            $ctxt->setTitle("Error 405");
             include_once "./view/error/405.php";
         }
 
-        function testDbAction($filter) {
-            $title = "Test DB";
-            $controller = "home";
+        function testDbAction() {
+            $ctxt = $this->getContext();
+            $ctxt->setTitle("Test DB");
             include_once "./testdb.php";
         }
     }

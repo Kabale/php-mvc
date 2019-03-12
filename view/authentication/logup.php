@@ -25,8 +25,6 @@
 
 
 <?php
-    $controller = "authentication";
-    $title = "Logup";
     $content = ob_get_clean();
     include_once "./view/template.php";
 ?>

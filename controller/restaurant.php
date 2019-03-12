@@ -3,7 +3,7 @@ include_once "./helper/DbHelper.php";
 include_once "./model/article.php";
 include_once "./model/core/message.php";
 
-class ArticlesController
+class RestaurantController extends BaseController
 {
     function createAction($filter = null)
     {       

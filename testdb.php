@@ -117,7 +117,7 @@
     echo "<br>distance between Arlon and Martelange : ". $result ."km<br>";
     $test = "Route d'Arlon 2, Windhof, Luxembourg";
     echo "<br>Coordonnes of $test =<br>";
-    print_r($mapHelper->getCoordonees($test));
+    print_r($mapHelper->geocodeAddress($test));
 
     
 ?>

@@ -15,11 +15,11 @@
             return $c;
         }
 
-        function getCoordonees($location) : ? object
+        function geocodeAddress($address) : ? object
         {
             $data = array(
                 'key' => $this->MapQuestKey,
-                'q' => $location,
+                'q' => $address,
                 'format' => 'json'
             );
 

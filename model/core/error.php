@@ -1,5 +1,5 @@
 <?php
-    class error
+    class AppError
     {
         private $field;
         private $errorMessage;

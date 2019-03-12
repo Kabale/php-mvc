@@ -3,12 +3,6 @@
 
     class BaseModel
     {
-
-        function __construct($filter)
-        {
-            $this->__constructcontext->setFilter($filter);
-        }
-
         function save()
         {
             $dbHelper = new DbHelper();
@@ -34,4 +28,6 @@
                 $message->setMessage();
             } 
         }
+
+        
     }

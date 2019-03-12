@@ -12,7 +12,7 @@
         </tr>
     </thead>
     <tbody>
-        <?php foreach($articles as $article): ?>
+        <?php foreach($ctxt->getAttribute("articles") as $article): ?>
         <tr>
             <td scope="row"><?= $article->getId()?></td>
             <td><?= $article->getTitle()?></td>
@@ -34,6 +34,5 @@
 
 <?php 
     $content = ob_get_clean(); 
-    $title = "List Articles";
     include_once "./view/template.php";
 ?>

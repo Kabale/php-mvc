@@ -4,7 +4,7 @@
     include_once "./model/core/filter.php";
     include_once "./model/user.php";
 
-    class context
+    class AppContext
     {
         private $title = ""; 
         private $filter = null; 
@@ -38,7 +38,7 @@
         {
             $this->filter = $filter;
 
-            if($title == "")
+            if($this->title == "")
             {
                 $this->title .= ($filter->getAction() != "" && $filter->getAction() != "default") ? ucfirst($filter->getAction())." " : "";
                 $this->title .= ucfirst($filter->getController());
@@ -47,7 +47,7 @@
 
         function setAttribute($key, $value)
         {
-            $attribute[$key] = $value;
+            $this->attribute[$key] = $value;
         }
 
         
@@ -58,18 +58,18 @@
             return $this->title;
         }
 
-        function getAuthentication() : User
+        function getAuthentication()
         {
 
             return $this->authentication;
         }
 
-        function getMessage(): Message
+        function getMessage(): ?Message
         {
-
+            return $this->message;
         }
 
-        function getAttribute($key) : object
+        function getAttribute($key)
         {
             return $this->attribute[$key];
         }

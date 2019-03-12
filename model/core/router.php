@@ -18,26 +18,26 @@
 
                 include_once $controllerFile;
 
-                $controller = new $controllerClass();
+                $controller = new $controllerClass($filter);
                 if(method_exists($controller, $controllerAction))
                 {
 
-                    $controller->$controllerAction($filter);
+                    $controller->$controllerAction();
                 }
                 else
                 {
-                   routeError404($filter);
+                   $this->routeError404($filter);
                 }
             }
             else {
-               routeError404($filter);
+               $this->routeError404($filter);
             }
         }
 
         private function routeError404($filter)
         {
             include_once "controller/home.php";
-            $controller = new HomeController();
-            $controller->error404Action($filter);
+            $controller = new HomeController($filter);
+            $controller->error404Action();
         }
     }
