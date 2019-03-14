@@ -2,16 +2,17 @@
 include_once "./helper/DbHelper.php";
 include_once "./model/article.php";
 include_once "./model/core/message.php";
+include_once "./controller/_controller.php";
 
-class RestaurantController extends BaseController
+class RestaurantsController extends BaseController
 {
-    function createAction($filter = null)
-    {       
-        $article = new Article();
-        $helper = new DbHelper();
-
+    function createAction()
+    {        
+        $this->getContext()->setAttribute("article", new Article());
+        
         if(isset($_POST["article"]))
         {
+            $article = new Article();
             // CREATE OBJECT
             if(isset($_POST["title"]))
                 $article->setTitle($_POST["title"]);
@@ -26,23 +27,20 @@ class RestaurantController extends BaseController
             $article->save();
 
             // REDIRECT USER TO LIST
-            header('Location: /articles/list');
+            header('Location: /restaurants/list');
             die();
         }
 
-        $title = "Create Article";
-        $controller = "articles";
-        include_once "./view/articles/create.php";
+        include_once "./view/restaurants/create.php";
     }
 
-    function readAction($filter = null)
+    function readAction()
     {   
         $article = new Article();
         $helper = new DbHelper();
 
-        if($filter != null) {
-            $id = $filter;
-            $result = $helper->get("articles", $id);
+        if($this->getContext()->getFilter()->getId() != null) {
+            $result = $helper->get("articles", $this->getContext()->getFilter()->getId());
             $articles = $result->fetchAll(PDO::FETCH_CLASS, "Article");
 
             if(count($articles) > 0)
@@ -50,25 +48,25 @@ class RestaurantController extends BaseController
                 
         } else {
             // REDIRECT USER TO LIST
-            header('Location: /articles/list');
+            header('Location: /restaurants/list');
             die();
         }
 
-        $controller = "articles";
-        include_once "./view/articles/read.php";
+        $this->getContext()->setAttribute("article", $article);
+        include_once "./view/restaurants/read.php";
     }
 
-    function updateAction($filter = null)
+    function updateAction()
     {  
         $article = new Article();
-        $helper = new DbHelper();
+        $db = new DbHelper();
 
         if(isset($_POST["article"]))
         {
             // CREATE OBJECT
             // TODO GET INT FROM FILTER AND CHECK IF EXISTING OBJECT
-            if($filter != null)
-                $article->setId($filter);
+            if($this->getContext()->getFilter()->getId() != null)
+                $article->setId($this->getContext()->getFilter()->getId());
             if(isset($_POST["title"]))
                 $article->setTitle($_POST["title"]);
             if(isset($_POST["content"]))
@@ -82,51 +80,49 @@ class RestaurantController extends BaseController
             $article->save();
 
             // REDIRECT USER TO LIST
-            header('Location: /articles/list');
+            header('Location: /restaurants/list');
             die();
         }
 
-        if(isset($filter))
+        if($this->getContext()->getFilter()->getId() != null)
         {
-            $id = $filter;
-            $result = $helper->get("articles", $id);
+            $id = $this->getContext()->getFilter()->getId();
+            $result = $db->get("articles", $id);
             $articles = $result->fetchAll(PDO::FETCH_CLASS, "Article");
             
             if(count($articles) > 0)
                 $article = $articles[0];
         }
 
-        $controller = "articles";
-        $title = "Update Article";
-        include_once "./view/articles/create.php";
+        $this->getContext()->setAttribute("article", $article);
+        include_once "./view/restaurants/create.php";
     }
 
-    function deleteAction($filter = null)
+    function deleteAction()
     {
         $article = new Article();
-        $article->setId($filter);
+        $article->setId($this->getContext()->getFilter()->getId());
         $article->delete();
 
         // REDIRECT USER TO LIST
-        header('Location: /articles/list');
+        header('Location: /restaurants/list');
         die();
     }
 
-    function listAction($filter = null)
-    {      
-        session_start();
-        $helper = new DbHelper();
-        $message = empty($_SESSION['message']) ? null : $_SESSION['message'];
-        if($message != null)        
-            $message->consumeMessage();
-        $result = $helper->get("articles");
+    function listAction()
+    {
+        // helper
+        $db = new DbHelper();
+        $result = $db->get("articles");
         $articles = $result->fetchAll(PDO::FETCH_CLASS, "Article");
-        $controller = "articles";
-        include_once "./view/articles/list.php";
+
+        $this->getContext()->setAttribute("articles", $articles);
+
+        include_once "./view/restaurants/list.php";
     }
 
-    function defaultAction($filter = null)
+    function defaultAction()
     {
-        $this->listAction($filter);
+        $this->listAction();
     }
 }

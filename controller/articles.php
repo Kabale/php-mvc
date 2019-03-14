@@ -1,5 +1,4 @@
 <?php    
-
 include_once "./helper/DbHelper.php";
 include_once "./controller/_controller.php";
 include_once "./model/article.php";
@@ -8,9 +7,8 @@ include_once "./model/core/context.php";
 class ArticlesController extends BaseController
 {
     function createAction()
-    {
-        $ctxt = $this->getContext();
-        $ctxt->setAttribute("article", new Article());
+    {        
+        $this->getContext()->setAttribute("article", new Article());
         
         if(isset($_POST["article"]))
         {
@@ -38,12 +36,11 @@ class ArticlesController extends BaseController
 
     function readAction()
     {   
-        $ctxt = $this->getContext();
         $article = new Article();
         $helper = new DbHelper();
 
-        if($ctxt->getFilter()->getId() != null) {
-            $result = $helper->get("articles", $ctxt->getFilter()->getId());
+        if($this->getContext()->getFilter()->getId() != null) {
+            $result = $helper->get("articles", $this->getContext()->getFilter()->getId());
             $articles = $result->fetchAll(PDO::FETCH_CLASS, "Article");
 
             if(count($articles) > 0)
@@ -55,13 +52,12 @@ class ArticlesController extends BaseController
             die();
         }
 
-        $ctxt->setAttribute("article", $article);
+        $this->getContext()->setAttribute("article", $article);
         include_once "./view/articles/read.php";
     }
 
     function updateAction()
     {  
-        $ctxt = $this->getContext();
         $article = new Article();
         $db = new DbHelper();
 
@@ -69,8 +65,8 @@ class ArticlesController extends BaseController
         {
             // CREATE OBJECT
             // TODO GET INT FROM FILTER AND CHECK IF EXISTING OBJECT
-            if($ctxt->getFilter()->getId() != null)
-                $article->setId($ctxt->getFilter()->getId());
+            if($this->getContext()->getFilter()->getId() != null)
+                $article->setId($this->getContext()->getFilter()->getId());
             if(isset($_POST["title"]))
                 $article->setTitle($_POST["title"]);
             if(isset($_POST["content"]))
@@ -88,9 +84,9 @@ class ArticlesController extends BaseController
             die();
         }
 
-        if($ctxt->getFilter()->getId() != null)
+        if($this->getContext()->getFilter()->getId() != null)
         {
-            $id = $ctxt->getFilter()->getId();
+            $id = $this->getContext()->getFilter()->getId();
             $result = $db->get("articles", $id);
             $articles = $result->fetchAll(PDO::FETCH_CLASS, "Article");
             
@@ -98,7 +94,7 @@ class ArticlesController extends BaseController
                 $article = $articles[0];
         }
 
-        $ctxt->setAttribute("article", $article);
+        $this->getContext()->setAttribute("article", $article);
         include_once "./view/articles/create.php";
     }
 
@@ -120,17 +116,7 @@ class ArticlesController extends BaseController
         $result = $db->get("articles");
         $articles = $result->fetchAll(PDO::FETCH_CLASS, "Article");
 
-        $ctxt = $this->getContext();
-        $ctxt->setAttribute("articles", $articles);
-
-        /*
-        session_start();
-        $helper = new DbHelper();
-        $message = empty($_SESSION['message']) ? null : $_SESSION['message'];
-        if($message != null)        
-            $message->consumeMessage();
-        $controller = "articles";
-        */
+        $this->getContext()->setAttribute("articles", $articles);
 
         include_once "./view/articles/list.php";
     }

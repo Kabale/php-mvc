@@ -50,6 +50,10 @@
             $this->attribute[$key] = $value;
         }
 
+        function setMessage($message)
+        {
+            $this->message = $message;
+        }
         
 
         // GETTER
@@ -71,7 +75,10 @@
 
         function getAttribute($key)
         {
-            return $this->attribute[$key];
+            if(isset($this->attribute[$key]))
+                return $this->attribute[$key];
+            else
+                return null;
         }
 
         function getFilter() : Filter

@@ -6,14 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="Test website for iepsa">
+    <meta name="author" content="Vincent Schandeler">
     
     <title><?= $this->getContext()->getTitle() ?></title>
 
     <!-- Bootstrap core CSS -->
     <link rel="icon" href="/public/img/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="/public/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/style.css"/>
     <link rel="stylesheet" type="text/css" href="/public/css/mapquest.css"/>
     
     <script src="/public/js/jquery3.3.1.min.js"></script>

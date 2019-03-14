@@ -1,13 +1,13 @@
 <?php
-    include './helper/DbHelper.php';
-    include './model/Article.php';
-/*
-    // TEST DATABASE HELPER
-    $helper = new DbHelper();
+    include_once './helper/DbHelper.php';
+    include_once './model/Article.php';
 
+    // TEST DATABASE HELPER
+    $dbHelper = new DbHelper();
+/*
     // TEST LIST ARTICLES
     echo "SHOW LIST ARTICLES<br>";
-    $result = $helper->get("articles");
+    $result = $dbHelper->get("articles");
     $rows = $result->fetchAll();
     foreach($rows as $row)
         echo $row['id']." ".$row['title']."<br>";
@@ -18,12 +18,12 @@
     $article->setTitle("Toto");
     $article->setContent("Contenu de l'article Toto");
 
-    $id = $helper->add("articles", $article);
+    $id = $dbHelper->add("articles", $article);
     echo "L'id du dernier article est : $id<br>";
 
     // SHOW LAST ARTICLE
     echo "<br><br>SHOW ARTICLE WITH ID $id<br>";
-    $result = $helper->get("articles", $id);
+    $result = $dbHelper->get("articles", $id);
     echo "Type : ".gettype($result). " ".get_class($result)."<br>";
     $rows = $result->fetchAll();
     foreach($rows as $row)
@@ -36,11 +36,11 @@
     // UPDATE LAST ARTICLE
     echo "<br><br>UPDATE ARTICLE<br>";
     $article->setCategory("Test");
-    $helper->update("articles", $article, $id);
+    $dbHelper->update("articles", $article, $id);
 
     // SHOW LAST ARTICLE
     echo "<br><br>SHOW ARTICLE WITH ID $id<br>";
-    $result = $helper->get("articles", $id);
+    $result = $dbHelper->get("articles", $id);
     $rows = $result->fetchAll();
     foreach($rows as $row)
         echo "Title : ".$row['title']."<br>";
@@ -51,11 +51,11 @@
 
     // REMOVE LAST ARTICLE
     echo "<br><br>REMOVE LAST ARTICLE";
-    $helper->delete("articles", $id);
+    $dbHelper->delete("articles", $id);
 
     //SHOW ARTICLES INFO
     echo "<br><br>SHOW ARTICLES INFO";
-    $result = $helper->getFieldInformation("articles");
+    $result = $dbHelper->getFieldInformation("articles");
     $rows = $result->fetchAll();
 
     echo "<table style='border 1 px solid black'><tr><th>Column Name</th><th>Nullable</th><th>data type</th><th>Max length</th><th>Default</th><th>Extra</th></tr>";
@@ -115,9 +115,19 @@
     // Martelange lat lon 49.83333, 5.7333
     $result = $mapHelper->calculateDistance(49.6833, 5.8167, 49.8333, 5.7333);
     echo "<br>distance between Arlon and Martelange : ". $result ."km<br>";
-    $test = "Route d'Arlon 2, Windhof, Luxembourg";
-    echo "<br>Coordonnes of $test =<br>";
-    print_r($mapHelper->geocodeAddress($test));
+    $test = "Rue des Potiers 300, Attert, Belgique";
+    $result = $mapHelper->geocodeAddress($test);
+    echo "<br>$test : ";
+    echo "<br>lat = $result->lat<br>lon = $result->lon<br>";
+    //print_r($mapHelper->geocodeAddress($test));
 
-    
-?>
+    // TEST CALL TO STORE PROC  
+    echo "<br><br>TEST CALL TO STORE PROC<br>";
+    $sql = "CALL getRestaurantNearby($result->lat, $result->lon, 3)";
+    $restaurants = $dbHelper->db->query($sql);
+    $rows = $restaurants->fetchAll();
+    foreach($rows as $row)
+    {
+        echo "<br>".$row['name']." ".$row['distance']."km";
+    }
+

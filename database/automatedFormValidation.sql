@@ -1,7 +1,0 @@
-SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'articles' AND COLUMN_NAME = 'title';
-# IS_NULLABLE (bool)
-# DATA_TYPE (varchar)
-# CHARACTER_MAXIMUM_LENGTH (int)
-# COLUMN_NAME(varchar)
-# COLUMN_DEFAULT (CURRENT_TIMESTAMP)
-# EXTRA sample (aut_increment, on_update, CURRENT_TIMESTAMP)

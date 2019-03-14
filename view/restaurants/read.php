@@ -3,32 +3,32 @@
 <div id="articles">
     <div class="d-block ">
         <label class="font-weight-bold" for="id">Id :</label>
-        <span name="id"><?=$this->getContext()->getAttribute("article")->getId()?></div>
+        <span name="id"><?=$article->getId()?></div>
     </div>
  
     <div class="d-block ">
         <label class="font-weight-bold" for="title">Title :</label>
-        <span name="title"><?=$this->getContext()->getAttribute("article")->getTitle()?></div>
+        <span name="title"><?=$article->getTitle()?></div>
     </div>
     <div class="d-block ">
         <label class="font-weight-bold" for="content">Content :</label>
-        <span name="content"><?=$this->getContext()->getAttribute("article")->getContent()?></div>
+        <span name="content"><?=$article->getContent()?></div>
     </div>
     <div class="d-block ">
         <label class="font-weight-bold" for="author">Author :</label>
-        <span name="author"><?=$this->getContext()->getAttribute("article")->getAuthor()?></div>
+        <span name="author"><?=$article->getAuthor()?></div>
     </div>
     <div class="d-block ">
         <label class="font-weight-bold" for="creationDate">Creation Date :</label>
-        <span name="creationDate"><?=$this->getContext()->getAttribute("article")->getCreationDate()?></div>
+        <span name="creationDate"><?=$article->getCreationDate()?></div>
     </div>
     <div class="d-block ">
         <label class="font-weight-bold" for="updateDate">Update Date :</label>
-        <span name="updateDate"><?=$this->getContext()->getAttribute("article")->getUpdateDate()?></div>
+        <span name="updateDate"><?=$article->getUpdateDate()?></div>
     </div>
     <div class="d-block ">
         <label class="font-weight-bold" for="category">Category :</label>
-        <span name="category"><?=$this->getContext()->getAttribute("article")->getCategory()?></div>
+        <span name="category"><?=$article->getCategory()?></div>
     </div>
 </div>
 

@@ -1,6 +1,8 @@
  <?php ob_start(); ?>
 </div>
-<button class="btn btn-primary" onclick="window.location.href='/articles/create'">Create Article</button>
+<?php if($this->getContext()->getAuthentication() != null):?>
+    <button class="btn btn-primary" onclick="window.location.href='/restaurants/create'">Create Restaurant</button>
+<?php endif ?>
 <br>
 <br>
 <table class="table table-striped">

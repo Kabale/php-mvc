@@ -5,9 +5,15 @@
   </button>
 
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-      <ul class="navbar-nav mr-auto">
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item <?php if($this->getContext()->getFilter()->getController() == "home"): ?>active<?php endif ?>">
+          <a class="nav-link" href="/home" >Home</a>
+        </li>
         <li class="nav-item <?php if($this->getContext()->getFilter()->getController() == "articles"): ?>active<?php endif ?>">
           <a class="nav-link" href="/articles" >Articles</a>
+        </li>
+        <li class="nav-item <?php if($this->getContext()->getFilter()->getController() == "restaurants"): ?>active<?php endif ?>">
+          <a class="nav-link" href="/restaurants" >Restaurants</a>
         </li>
       </ul>
       <form class="form-inline mt-2 mt-md-0">

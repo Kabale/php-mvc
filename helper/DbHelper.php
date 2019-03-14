@@ -1,7 +1,7 @@
 <?php
     class DbHelper
     {
-        private $db;
+        public $db;
 
         public function __construct(){
             $SERVERNAME = "localhost";

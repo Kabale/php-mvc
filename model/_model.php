@@ -23,7 +23,7 @@
             if($this->getId() != null) {
                 
                 $dbHelper->delete($table, $this->getId());
-                //TODO: IF SUCCESSFULL DELETE
+                //TODO: IF NOT SUCCESSFULL DELETE
                 $message = new Message("Delete", "Article deleted with success", MessageStatus::Success);
                 $message->setMessage();
             } 
