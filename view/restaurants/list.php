@@ -8,24 +8,24 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th scope="col">Article Id</th>
-            <th scope="col">Title</th>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
             <th scope="col">Link</th>
         </tr>
     </thead>
     <tbody>
-        <?php foreach($this->getContext()->getAttribute("articles") as $article): ?>
+        <?php foreach($this->getContext()->getAttribute("restaurants") as $restaurant): ?>
         <tr>
-            <td scope="row"><?= $article->getId()?></td>
-            <td><?= $article->getTitle()?></td>
+            <td scope="row"><?= $restaurant->getId()?></td>
+            <td><?= $restaurant->getName()?></td>
             <td>
-                <a title="read" href="/articles/read/<?= $article->getId()?>">
+                <a title="read" href="/restaurants/read/<?= $restaurant->getId()?>">
                     <img src="/public/icons/eye.svg" alt="read" height="24px"/>
                 </a>
-                <a title="write" href="/articles/update/<?= $article->getId()?>">
+                <a title="write" href="/restaurants/update/<?= $restaurant->getId()?>">
                     <img src="/public/icons/edit.svg" alt="write" height="24px"/>
                 </a>
-                <a title="delete" href="/articles/delete/<?= $article->getId()?>">
+                <a title="delete" href="/restaurants/delete/<?= $restaurant->getId()?>">
                     <img src="/public/icons/trash.svg" alt="delete" height="24px"/>
                 </a>
             </td>

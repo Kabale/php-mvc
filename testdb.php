@@ -1,6 +1,7 @@
 <?php
     include_once './helper/DbHelper.php';
     include_once './model/Article.php';
+    include_once './model/file.php';
 
     // TEST DATABASE HELPER
     $dbHelper = new DbHelper();
@@ -129,5 +130,18 @@
     foreach($rows as $row)
     {
         echo "<br>".$row['name']." ".$row['distance']."km";
+    }
+
+    //TEST IMAGE
+    echo "<br><br>TEST CALL TO STORE PROC<br>";
+    $db = new DbHelper();
+    $query = $db->get("files", 9);
+    $files = $query->fetchAll(PDO::FETCH_CLASS, "File");
+    $file = null;
+    if(count($files) > 0)
+    {
+       $file = $files[0];
+       echo "File ID = ".$file->getId();
+       echo '<img src="data:'.$file->getType().';base64,'.base64_encode($file->getContent()) .'" />';
     }
 

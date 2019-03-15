@@ -23,11 +23,11 @@
         {
             return $this->password;
         }
-        function getCreationDate(): date
+        function getCreationDate(): ?string
         {
             return $this->creationDate;
         }
-        function getIsEnabled(): boolean
+        function getIsEnabled(): bool
         {
             return $this->isEnabled;
         }
@@ -54,15 +54,33 @@
             $this->isEnabled = $isEnabled;
         }
 
-        function isValid(): bool
+        ///
+        /// Return User if user has corresponding password and username
+        ///
+        function isValid(): User
         {
             $dbHelper = new DbHelper();
             if($this->username != null && $this->username != "" && $this->password != null && $this->password != "")
-                return $dbHelper->isValidUser($this->username, $this->password);
+                if($dbHelper->isValidUser($this->username, $this->password))
+                {
+                    $sql = "SELECT * FROM users WHERE username = '$this->username'";
+                    $query = $dbHelper->db->query($sql);
+                    $query->setFetchMode(PDO::FETCH_CLASS, 'User');
+                    $user = $query->fetch();
+                    $this->id = $user->getId();
+                    $this->creationDate = $user->getCreationDate();
+                    $this->isEnabled = $user->getIsEnabled();
+                    return $this;
+                }
+
             else
-                return false;
+                return null;
         }
 
+
+        ///
+        /// RETURN true if a user with the same username already exists in database 
+        ///
         function isExisting(): bool
         {
             try

@@ -88,8 +88,8 @@
                 $user->setUsername($_POST["username"]);
                 $user->setPassword($_POST["password"]);
 
-                $isValid = $user->isValid();
-                if($isValid) {
+                $user = $user->isValid();
+                if($user != null) {
                     $message = new Message("", "You are successfuled authenticated", MessageStatus::Success);
                     $message->setMessage();
 
