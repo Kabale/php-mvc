@@ -3,57 +3,56 @@
     include_once './model/Article.php';
     include_once './model/file.php';
 
+    ob_start();
+
     // TEST DATABASE HELPER
     $dbHelper = new DbHelper();
-/*
+
     // TEST LIST ARTICLES
     echo "SHOW LIST ARTICLES<br>";
-    $result = $dbHelper->get("articles");
-    $rows = $result->fetchAll();
-    foreach($rows as $row)
-        echo $row['id']." ".$row['title']."<br>";
-
+    $articles = $dbHelper->retrieveMultiple("articles");
+    
+    foreach ($articles as $article)
+        echo $article->getid()." ".$article->getTitle()."<br>";
+    
     // TEST ADD ARTICLE 
     echo "<br><br>ADD ARTICLE TOTO<br>";
     $article = new Article();
     $article->setTitle("Toto");
     $article->setContent("Contenu de l'article Toto");
 
-    $id = $dbHelper->add("articles", $article);
+    $id = $dbHelper->add($article);
     echo "L'id du dernier article est : $id<br>";
 
     // SHOW LAST ARTICLE
     echo "<br><br>SHOW ARTICLE WITH ID $id<br>";
-    $result = $dbHelper->get("articles", $id);
-    echo "Type : ".gettype($result). " ".get_class($result)."<br>";
-    $rows = $result->fetchAll();
-    foreach($rows as $row)
-        echo "Title : ".$row['title']."<br>";
-        echo "Content : ".$row['content']."<br>";
-        echo "Category : ".$row['category']."<br>";
-        echo "CreationDate : ".$row['creationDate']."<br>";
-        echo "UpdateDate : ".$row['updateDate']."<br>";
+    $article = $dbHelper->retrieve("articles", $id);
+    
+    echo "Title : ".$article->getTitle()."<br>";
+    echo "Content : ".$article->getContent()."<br>";
+    echo "Category : ".$article->getCategory()."<br>";
+    echo "CreationDate : ".$article->getCreationDate()."<br>";
+    echo "UpdateDate : ".$article->getUpdateDate()."<br>";
 
     // UPDATE LAST ARTICLE
     echo "<br><br>UPDATE ARTICLE<br>";
     $article->setCategory("Test");
-    $dbHelper->update("articles", $article, $id);
+    $dbHelper->update($article, $id);
 
     // SHOW LAST ARTICLE
     echo "<br><br>SHOW ARTICLE WITH ID $id<br>";
-    $result = $dbHelper->get("articles", $id);
-    $rows = $result->fetchAll();
-    foreach($rows as $row)
-        echo "Title : ".$row['title']."<br>";
-        echo "Content : ".$row['content']."<br>";
-        echo "Category : ".$row['category']."<br>";
-        echo "CreationDate : ".$row['creationDate']."<br>";
-        echo "UpdateDate : ".$row['updateDate']."<br>";
+    $article = $dbHelper->retrieve("articles", $id);
+    echo "Title : ".$article->getTitle()."<br>";
+    echo "Content : ".$article->getContent()."<br>";
+    echo "Category : ".$article->getCategory()."<br>";
+    echo "CreationDate : ".$article->getCreationDate()."<br>";
+    echo "UpdateDate : ".$article->getUpdateDate()."<br>";
 
     // REMOVE LAST ARTICLE
     echo "<br><br>REMOVE LAST ARTICLE";
     $dbHelper->delete("articles", $id);
 
+    /*
     //SHOW ARTICLES INFO
     echo "<br><br>SHOW ARTICLES INFO";
     $result = $dbHelper->getFieldInformation("articles");
@@ -135,13 +134,12 @@
     //TEST IMAGE
     echo "<br><br>TEST CALL TO STORE PROC<br>";
     $db = new DbHelper();
-    $query = $db->get("files", 9);
-    $files = $query->fetchAll(PDO::FETCH_CLASS, "File");
-    $file = null;
-    if(count($files) > 0)
+    $file = $db->retrieve("files", 9);
+    if($file != null)
     {
-       $file = $files[0];
        echo "File ID = ".$file->getId();
        echo '<img src="data:'.$file->getType().';base64,'.base64_encode($file->getContent()) .'" />';
     }
 
+    $content = ob_get_clean(); 
+    include_once "./view/template.php";

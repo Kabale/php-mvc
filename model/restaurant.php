@@ -31,27 +31,21 @@
         {
         return $this->name;
         }
-        public function getImage(): ?File
+        public function getImage(): ? File
         {
             if($this->image == null && $this->imageId != null) 
             {
-                $dbHelper = new DbHelper();
-                $query = $dbHelper->get("files", $this->imageId);
-                $images = $query->fetchAll(PDO::FETCH_CLASS, "File");
-                if(count($images) > 0)
-                    $this->image = $images[0];
+                $db = new DbHelper();
+                $this->image = $db->retrieve("files", $this->imageId);
             }
             return $this->image;
         }
-        public function getCreatedBy(): ?User
+        public function getCreatedBy(): ? User
         {
             if($this->createdBy == null && $this->createdById != null)
             {
-                $dbHelper = new DbHelper();
-                $query = $dbHelper->get("users", $this->createdById);
-                $users = $query->fetchAll(PDO::FETCH_CLASS, "User");
-                if(count($users) > 0)
-                    $this->createdBy = $users[0];
+                $db = new DbHelper();
+                $this->createdBy = $db->retrieve("users", $this->createdById);
             }
             return $this->createdBy;
         }

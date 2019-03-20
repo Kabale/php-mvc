@@ -15,7 +15,10 @@
     </div>
     <div class="d-block ">
         <label class="font-weight-bold" for="author">CreatedBy :</label>
-        <span name="author"><?=$this->getContext()->getAttribute("restaurant")->getCreatedBy()->getUsername()?></div>
+        <?php if($this->getContext()->getAttribute("restaurant")->getCreatedBy() != null):?>
+            <span name="author"><?=$this->getContext()->getAttribute("restaurant")->getCreatedBy()->getUsername()?></div>
+        <?php endif ?>
+        
     </div>
     <div class="d-block ">
         <label class="font-weight-bold" for="creationDate">Creation Date :</label>

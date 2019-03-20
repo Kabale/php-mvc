@@ -1,21 +1,28 @@
 <?php
+    require_once "./model/core/message.php";
+
     class DbHelper
     {
         public $db;
+        private $DEBUGMODE = true;
 
         public function __construct(){
             $SERVERNAME = "localhost";
             $USERNAME = "iepsa_user";
             $PASSWORD = "ZHeg5X0Ti12244Fk";
             $DATABASE = "iepsa_arlon";
-
+            
             try {
                 $this->db = new PDO("mysql:host=$SERVERNAME;dbname=$DATABASE", $USERNAME, $PASSWORD);
                 $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             }
             catch(PDOException $e)
             {
-                echo "Connection failed: " . $e->getMessage();
+                if($this->DEBUGMODE == true)
+                    $message = new Message("SQL ERROR", "__construct() : " . $e->getMessage(), MessageStatus::Error);
+                else
+                    $message = new Message("SQL ERROR", "Cannot connect to the sql database!", MessageStatus::Error);
+                $message->setMessage();
             }
         }
 
@@ -26,30 +33,71 @@
         /**
          * @param string table = name of the SQL table
          * @param int id = id of the requested object, if none return all the objects
-         * @return object PDOStatement
+         * @param string objectName = name of the object returned by request
+         * @return object objectName object or null
          */
-        public function get($table, $id = null)
+        public function retrieve($table, $id, $objectName = null)
         {
+            $objectName = ($objectName == null) ? rtrim($table, 's') : $objectName;
+            include_once "./model/" . $objectName . ".php";
+
+            $result = null;
             $sql = "SELECT * FROM $table";
-            if($id) {
-                $sql = $sql. " WHERE id = $id";
-            }
+            $sql = $sql. " WHERE id = $id";
             try {
-                return $this->db->query($sql);
+                $query = $this->db->query($sql);
+                $query->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, ucfirst($objectName));
+                $result = $query->fetch();
             } 
-            catch(PDOException $e) {
-                echo $sql . "<br>" . $e->getMessage();
+            catch(PDOException $e)
+            {
+                if($this->DEBUGMODE == true)
+                    $message = new Message("SQL ERROR", "Retrieve(" . $table . ", " . $id . ", " . $objectName . ") : " . $e->getMessage(), MessageStatus::Error);
+                else
+                    $message = new Message("SQL ERROR", "Cannot retrieve " . $table . "!", MessageStatus::Error);
+                $message->setMessage();
             }
-            return false;
+            return $result;
         }
+
+        /**
+         * @param string table = name of SQL table
+         * @param string objectName = name of the object returned by request
+         * @return array[object] objectName object or empty array
+         */
+        public function retrieveMultiple($table, $objectName = null) : array
+        {
+            $objectName = ($objectName == null) ? rtrim($table, 's') : $objectName;
+            include_once "./model/" . $objectName . ".php";
+            
+            $result = [];
+            try
+            {
+                $sql = "SELECT * FROM $table";
+                $query = $this->db->query($sql);
+                $query->setFetchMode(PDO::FETCH_CLASS, ucfirst($objectName));
+                $result = $query->fetchAll();
+            }
+            catch(PDOException $e)
+            {
+                if($this->DEBUGMODE == true)
+                    $message = new Message("SQL ERROR", "RetrieveMultiple(" . $table . ", " . $objectName . ") : " . $e->getMessage(), MessageStatus::Error);
+                else
+                    $message = new Message("SQL ERROR", "Cannot retrieve " . $table . "!", MessageStatus::Error);
+                $message->setMessage();
+            }
+            return $result;
+        }
+
 
         /**
          * @param string table = name of the SQL table
          * @param object object to be updated in the database
          * @return int id of the created object
          */
-        public function add($table, $object)
+        public function add($object, $table = null)
         {
+            $table = ($table == null) ? get_class($object) . "s" : $table;
             $keys = [];
             $val = [];
             $reflectionClass = new ReflectionClass(get_class($object));
@@ -75,7 +123,11 @@
                 $this->db->query($sql);
             }
             catch(PDOException $e) {
-                echo $sql . "<br>" . $e->getMessage();
+                if($this->DEBUGMODE == true)
+                    $message = new Message("SQL ERROR", "RetrieveMultiple(" . $table . ", " . $objectName . ") : " . $e->getMessage(), MessageStatus::Error);
+                else
+                    $message = new Message("SQL ERROR", "Cannot retrieve " . $table . "!", MessageStatus::Error);
+                $message->setMessage();
             }
             return $this->db->lastInsertId();
         }
@@ -85,8 +137,9 @@
          * @param object object to be updated in the database
          * @param int id = id of the modified object
          */
-        public function update($table, $object, $id)
+        public function update($object, $id, $table = null)
         {
+            $table = ($table == null) ? get_class($object) . "s" : $table;
             $val = [];
             $reflectionClass = new ReflectionClass(get_class($object));
             $properties = $reflectionClass->getProperties();
@@ -109,7 +162,11 @@
                 $this->db->query($sql);
             }
             catch(PDOException $e) {
-                echo $sql . "<br>" . $e->getMessage();
+                if($this->DEBUGMODE == true)
+                    $message = new Message("SQL ERROR", "Update(" . $object . ", " . $id . ", " . $table .") : " . $e->getMessage(), MessageStatus::Error);
+                else
+                    $message = new Message("SQL ERROR", "Cannot update " . $table . "!", MessageStatus::Error);
+                $message->setMessage();
             }
         }
 
@@ -125,12 +182,17 @@
                 $this->db->query($sql);
             }
             catch(PDOException $e) {
-                echo $sql . "<br>" . $e->getMessage();
+                if($this->DEBUGMODE == true)
+                    $message = new Message("SQL ERROR", "delete(" . $table . ", " . $id . ") : " . $e->getMessage(), MessageStatus::Error);
+                else
+                    $message = new Message("SQL ERROR", "Cannot delete " . $table . "!", MessageStatus::Error);
+                $message->setMessage();
             }
         }
 
         /**
          * @param string table = name of the SQL table
+         * @return object PDO 
          */
         public function getFieldInformation($table)
         {
@@ -140,26 +202,50 @@
                 return $this->db->query($sql);
             } 
             catch(PDOException $e) {
-                echo $sql . "<br>" . $e->getMessage();
+                if($this->DEBUGMODE == true)
+                    $message = new Message("SQL ERROR", "getFieldInformation(" . $table . ") : " . $e->getMessage(), MessageStatus::Error);
+                else
+                    $message = new Message("SQL ERROR", "Cannot get field information for the " . $table . "!", MessageStatus::Error);
+                $message->setMessage();
             }
         }
 
         /**
          * @param string username 
          * @param string password 
+         * @return bool
          */
         public function isValidUser($username, $password) : bool
         {
-            $sql ="SELECT COUNT(id) as count FROM users WHERE LOWER(username) = LOWER('$username') AND password = SHA2('$password', 256)";
-            $result = $this->db->query($sql);
-            $rows = $result->fetchAll();
-            if(((int)$rows[0]["count"]) > 0)
+            $result = false;
+            try
             {
-                return true;
+                $sql ="SELECT COUNT(id) as count FROM users WHERE LOWER(username) = LOWER('$username') AND password = SHA2('$password', 256)";
+                $result = $this->db->query($sql);
+                $rows = $result->fetchAll();
+                if(((int)$rows[0]["count"]) > 0)
+                {
+                    $result = true;
+                }
             }
-            else {
-                return false;
+            catch(PDOException $e) {
+                if($this->DEBUGMODE == true)
+                    $message = new Message("SQL ERROR", "isValidUser(" . $username . ") : " . $e->getMessage(), MessageStatus::Error);
+                else
+                    $message = new Message("SQL ERROR", "Error on user validation!", MessageStatus::Error);
+                $message->setMessage();
             }
+
+            return $result;
+            
+        }
+
+        public function insertFile($file)
+        {
+            $sql = "INSERT INTO files(content, type) VALUES('file_get_contents($file->getContent)', '$file->getType')";
+            $query = $dbHelper->db->query($sql);
+            $query->setFetchMode(PDO::FETCH_CLASS, 'File');
+            $query->fetch();
         }
     }
 ?>

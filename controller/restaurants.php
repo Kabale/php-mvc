@@ -13,6 +13,7 @@ class RestaurantsController extends BaseController
         
         if($_SERVER['REQUEST_METHOD'] == 'POST')
         {
+            $db = new DbHelper();
             /*
             $file = new File();
             $restaurant = new Restaurant();
@@ -27,21 +28,18 @@ class RestaurantsController extends BaseController
                 $article->setCategory($_POST["category"]);
             
             // SEND OBJECT TO DATABASE
-            $restaurant->save();
+            $db->add($restaurant);
             */
-
+            
             if(isset($_FILES["image"]))
             {
                 $image = $_FILES["image"];
                 $file = new File();
                 $file->setType($image["type"]);
                 $file->setContent(addslashes(file_get_contents($image["tmp_name"])));
-                
-                $dbHelper = new DbHelper();
-                $sql = "INSERT INTO files(content, type) VALUES('file_get_contents($file->getContent)', '$file->getType')";
-                $query = $dbHelper->db->query($sql);
-                $query->setFetchMode(PDO::FETCH_CLASS, 'File');
-                $file = $query->fetch();
+                                
+                $db = new DbHelper();
+                $db->add($file);  
             }
 
 
@@ -59,12 +57,7 @@ class RestaurantsController extends BaseController
         $helper = new DbHelper();
 
         if($this->getContext()->getFilter()->getId() != null) {
-            $result = $helper->get("restaurants", $this->getContext()->getFilter()->getId());
-            $restaurants = $result->fetchAll(PDO::FETCH_CLASS, "Restaurant");
-
-            if(count($restaurants) > 0)
-                $restaurant = $restaurants[0];
-                
+            $restaurant = $helper->retrieve("restaurants", $this->getContext()->getFilter()->getId());                
         } else {
             // REDIRECT USER TO LIST
             header('Location: /restaurants/list');
@@ -96,7 +89,14 @@ class RestaurantsController extends BaseController
                 $article->setCategory($_POST["category"]);
             
             // SEND OBJECT TO DATABASE
-            $article->save();
+            if($article->getId() ==null)
+            {
+                $db->add($article);
+            }
+            else
+            {
+                $db->update($article, $article->getId());
+            }
 
             // REDIRECT USER TO LIST
             header('Location: /restaurants/list');
@@ -106,11 +106,7 @@ class RestaurantsController extends BaseController
         if($this->getContext()->getFilter()->getId() != null)
         {
             $id = $this->getContext()->getFilter()->getId();
-            $result = $db->get("articles", $id);
-            $articles = $result->fetchAll(PDO::FETCH_CLASS, "Article");
-            
-            if(count($articles) > 0)
-                $article = $articles[0];
+            $article = $db->retrieve("articles", $id);
         }
 
         $this->getContext()->setAttribute("article", $article);
@@ -119,10 +115,9 @@ class RestaurantsController extends BaseController
 
     function deleteAction()
     {
-        $article = new Article();
-        $article->setId($this->getContext()->getFilter()->getId());
-        $article->delete();
-
+        $db = new DbHelper();
+        $db->delete("articles", $this->getContext()->getFilter()->getId());
+        
         // REDIRECT USER TO LIST
         header('Location: /restaurants/list');
         die();
@@ -132,9 +127,8 @@ class RestaurantsController extends BaseController
     {
         // helper
         $db = new DbHelper();
-        $result = $db->get("restaurants");
-        $restaurants = $result->fetchAll(PDO::FETCH_CLASS, "Restaurant");
-
+        $restaurants = $db->retrieveMultiple("restaurants");
+       
         $this->getContext()->setAttribute("restaurants", $restaurants);
 
         include_once "./view/restaurants/list.php";

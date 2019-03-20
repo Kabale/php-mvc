@@ -24,7 +24,8 @@ class ArticlesController extends BaseController
                 $article->setCategory($_POST["category"]);
             
             // SEND OBJECT TO DATABASE
-            $article->save();
+            $dbHelper = new dbHelper();
+            $dbHelper->add($article);          
 
             // REDIRECT USER TO LIST
             header('Location: /articles/list');
@@ -40,11 +41,7 @@ class ArticlesController extends BaseController
         $helper = new DbHelper();
 
         if($this->getContext()->getFilter()->getId() != null) {
-            $result = $helper->get("articles", $this->getContext()->getFilter()->getId());
-            $articles = $result->fetchAll(PDO::FETCH_CLASS, "Article");
-
-            if(count($articles) > 0)
-                $article = $articles[0];
+            $article = $helper->retrieve("articles", $this->getContext()->getFilter()->getId());
                 
         } else {
             // REDIRECT USER TO LIST
@@ -77,7 +74,14 @@ class ArticlesController extends BaseController
                 $article->setCategory($_POST["category"]);
             
             // SEND OBJECT TO DATABASE
-            $article->save();
+            if($article->getId() == null)
+            {
+                $db->add($article);
+            }
+            else 
+            {
+                $db->update($article, $article->getId());
+            }
 
             // REDIRECT USER TO LIST
             header('Location: /articles/list');
@@ -87,11 +91,7 @@ class ArticlesController extends BaseController
         if($this->getContext()->getFilter()->getId() != null)
         {
             $id = $this->getContext()->getFilter()->getId();
-            $result = $db->get("articles", $id);
-            $articles = $result->fetchAll(PDO::FETCH_CLASS, "Article");
-            
-            if(count($articles) > 0)
-                $article = $articles[0];
+            $article = $db->retrieve("articles", $id);
         }
 
         $this->getContext()->setAttribute("article", $article);
@@ -100,10 +100,9 @@ class ArticlesController extends BaseController
 
     function deleteAction()
     {
-        $article = new Article();
-        $article->setId($this->getContext()->getFilter()->getId());
-        $article->delete();
-
+        $db = new DbHelper();
+        $db->delete("articles", $this->getContext()->getFilter()->getId());
+                
         // REDIRECT USER TO LIST
         header('Location: /articles/list');
         die();
@@ -113,9 +112,7 @@ class ArticlesController extends BaseController
     {
         // helper
         $db = new DbHelper();
-        $result = $db->get("articles");
-        $articles = $result->fetchAll(PDO::FETCH_CLASS, "Article");
-
+        $articles = $db->retrieveMultiple("articles");
         $this->getContext()->setAttribute("articles", $articles);
 
         include_once "./view/articles/list.php";
