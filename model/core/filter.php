@@ -60,7 +60,7 @@
         function getFilter($key) : ?string
         {
             if(ISSET($this->filter[$key]))
-                return $this->filter[$key];
+                return  urldecode($this->filter[$key]);
             else
                 return null;
         }

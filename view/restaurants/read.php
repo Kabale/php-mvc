@@ -1,6 +1,6 @@
 <?php ob_start(); ?>
 
-<div id="articles">
+<div id="restaurant">
     <div class="d-block ">
         <label class="font-weight-bold" for="id">Id :</label>
         <span name="id"><?=$this->getContext()->getAttribute("restaurant")->getId()?></div>

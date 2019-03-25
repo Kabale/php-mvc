@@ -107,7 +107,7 @@
                 $method = "get".ucfirst($properties[$i]->name);
                 if(method_exists($object, $method)) { 
                     $v = $object->$method();
-                    if($v){
+                    if($v && gettype($v) != "object"){
                         $v = str_replace("'","\'",$v);
                         array_push($keys, $properties[$i]->name);
                         array_push($val, (gettype($v) == "string") ? "'$v'" : "$v");
@@ -148,7 +148,7 @@
                 $method = "get".ucfirst($properties[$i]->name);
                 if(method_exists($object, $method)) { 
                     $v = $object->$method();
-                    if($v){
+                    if($v && gettype($v) != "object"){
                         $v = str_replace("'","\'",$v);
                         array_push($val, $properties[$i]->name."=".((gettype($v) == "string") ? "'$v'" : "$v"));
                     }
@@ -163,7 +163,7 @@
             }
             catch(PDOException $e) {
                 if($this->DEBUGMODE == true)
-                    $message = new Message("SQL ERROR", "Update(" . $object . ", " . $id . ", " . $table .") : " . $e->getMessage(), MessageStatus::Error);
+                    $message = new Message("SQL ERROR", "Update(" . $id . ", " . $table .") : " . $e->getMessage(), MessageStatus::Error);
                 else
                     $message = new Message("SQL ERROR", "Cannot update " . $table . "!", MessageStatus::Error);
                 $message->setMessage();
@@ -210,23 +210,78 @@
             }
         }
 
+        ///
+        /// RETURN true if a user with the same username already exists in database 
+        ///
+        function isExistingUser($user): bool
+        {
+            $result = null;
+            try
+            {
+                $dbHelper = new DbHelper();
+                $sql = "SELECT username FROM users WHERE username = '$user->getUsername()'";
+                $result = $dbHelper->db->query($sql);
+                $query->setFetchMode(PDO::FETCH_CLASS, "User");
+                $result = $query->fetch();
+            }
+            catch(PDOException $e)
+            {
+                if($this->DEBUGMODE == true)
+                    $message = new Message("SQL ERROR", "isExistingUser : " . $e->getMessage(), MessageStatus::Error);
+                else
+                    $message = new Message("SQL ERROR", "Error on user existing!", MessageStatus::Error);
+                $message->setMessage();
+            }
+
+            return $result;
+        }
+
+        function saveUser($user)
+        {
+            $dbHelper = new DbHelper();
+            try
+            { 
+                if($user->getId() == null)
+                {
+                    // CREATE USER
+                    $sql = "INSERT INTO users(username, password) VALUES('$user->getUsername()',SHA2('$user->getPassword()', 256))";
+                    $dbHelper->db->query($sql);
+                }
+                else 
+                {
+                    // UPDATE USER
+                    $sql = "UPDATE users SET password = SHA2('$user->getPassword()', 256) WHERE id=$user->getId();";
+                    $dbHelper->db->query($sql);
+                }
+            }
+            catch(PDOException $e)
+            {
+                if($this->DEBUGMODE == true)
+                    $message = new Message("SQL ERROR", "saveUser : " . $e->getMessage(), MessageStatus::Error);
+                else
+                    $message = new Message("SQL ERROR", "Error on user existing!", MessageStatus::Error);
+                $message->setMessage();
+            }
+
+        } 
+
         /**
          * @param string username 
          * @param string password 
          * @return bool
          */
-        public function isValidUser($username, $password) : bool
+        public function isValidUser($username, $password) : ? User
         {
-            $result = false;
+            $result = null;
             try
             {
-                $sql ="SELECT COUNT(id) as count FROM users WHERE LOWER(username) = LOWER('$username') AND password = SHA2('$password', 256)";
-                $result = $this->db->query($sql);
-                $rows = $result->fetchAll();
-                if(((int)$rows[0]["count"]) > 0)
-                {
-                    $result = true;
-                }
+                $sql ="SELECT * FROM users WHERE LOWER(username) = LOWER('$username') AND password = SHA2('$password', 256)";
+                $query = $this->db->query($sql);
+                $query->setFetchMode(PDO::FETCH_CLASS, "User");
+                $result = $query->fetch();
+                if($result == false)
+                    $result = null;
+
             }
             catch(PDOException $e) {
                 if($this->DEBUGMODE == true)
@@ -240,12 +295,96 @@
             
         }
 
-        public function insertFile($file)
+        public function insertFile($file) : ? int
         {
-            $sql = "INSERT INTO files(content, type) VALUES('file_get_contents($file->getContent)', '$file->getType')";
-            $query = $dbHelper->db->query($sql);
-            $query->setFetchMode(PDO::FETCH_CLASS, 'File');
-            $query->fetch();
+            $result = 0;
+            try
+            {
+                $content = $file->getContent();
+                $type = $file->getType();
+                $sql = "INSERT INTO files(content, type) VALUES(:content,:type)";
+                $stmt = $this->db->prepare($sql);
+                $stmt->bindParam(':content', $content, PDO::PARAM_LOB);
+                $stmt->bindParam(':type', $type, PDO::PARAM_STR, 50);
+                $stmt->execute();
+
+                $result = $this->db->lastInsertId();
+            }
+            catch(PDOException $e) {
+                if($this->DEBUGMODE == true)
+                    $message = new Message("SQL ERROR", "insertFile : " . $e->getMessage(), MessageStatus::Error);
+                else
+                    $message = new Message("SQL ERROR", "Error on insert image!", MessageStatus::Error);
+                $message->setMessage();
+            }
+            return $result;
+        }
+
+        /**
+         * @param object object to be updated in the database
+         * @return int id of the created object
+         */
+        public function saveRestaurant($object)
+        {
+            $result = 0;
+            try
+            {
+                $id = $object->getId();
+                $name = $object->getName();
+                $country = $object->getCountry();
+                $city = $object->getCity();
+                $number = $object->getNumber();
+                $line = $object->getLine();
+                $location = $object->getLocation();
+                $lat = $object->getLat();
+                $lon = $object->getLon();
+                $createdById = $object->getCreatedById();
+                $imageId = $object->getImageId();
+
+                if($id == null)
+                {
+                    // CREATE
+                    $sql = "INSERT INTO restaurants(name, country, city, number, line, location, lat, lon, createdById, imageId) VALUES(:name, :country, :city, :number, :line, :location, :lat, :lon, :createdById, :imageId)";
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->bindParam(':name', $name, PDO::PARAM_STR, 250);
+                    $stmt->bindParam(':country', $country, PDO::PARAM_STR, 50);
+                    $stmt->bindParam(':city', $city, PDO::PARAM_STR, 50);
+                    $stmt->bindParam(':number', $number, PDO::PARAM_STR, 10);
+                    $stmt->bindParam(':line', $line, PDO::PARAM_STR, 100);
+                    $stmt->bindParam(':location', $location, PDO::PARAM_STR, 1000);
+                    $stmt->bindParam(':lat', $lat, PDO::PARAM_STR, 50);
+                    $stmt->bindParam(':lon', $lon, PDO::PARAM_STR, 50);
+                    $stmt->bindParam(':createdById', $createdById, PDO::PARAM_INT);
+                    $stmt->bindParam(':imageId', $imageId, PDO::PARAM_INT);
+                }
+                else
+                {
+                    // UPDATE
+                    $sql = "UPDATE restaurants SET name=:name, country=:country , city=:city, number=:number, line=:line, location=:location, lat=:lat, lon=:lon, imageId=:imageId WHERE id = :id";
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+                    $stmt->bindParam(':name', $name, PDO::PARAM_STR, 250);
+                    $stmt->bindParam(':country', $country, PDO::PARAM_STR, 50);
+                    $stmt->bindParam(':city', $city, PDO::PARAM_STR, 50);
+                    $stmt->bindParam(':number', $number, PDO::PARAM_STR, 10);
+                    $stmt->bindParam(':line', $line, PDO::PARAM_STR, 100);
+                    $stmt->bindParam(':location', $location, PDO::PARAM_STR, 1000);
+                    $stmt->bindParam(':lat', $lat, PDO::PARAM_STR, 50);
+                    $stmt->bindParam(':lon', $lon, PDO::PARAM_STR, 50);
+                    $stmt->bindParam(':imageId', $imageId, PDO::PARAM_INT);
+
+                }
+                $stmt->execute();
+                $result = $this->db->lastInsertId();
+            }
+            catch(PDOException $e) {
+                if($this->DEBUGMODE == true)
+                    $message = new Message("SQL ERROR", "saveRestaurant(" . $object->getName() . ") : " . $e->getMessage(), MessageStatus::Error);
+                else
+                    $message = new Message("SQL ERROR", "Error on save restaurant!", MessageStatus::Error);
+                $message->setMessage();
+            }
+            return $result;
         }
     }
 ?>

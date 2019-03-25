@@ -1,5 +1,6 @@
 <?php    
 include_once "./helper/DbHelper.php";
+include_once "./helper/MapHelper.php";
 include_once "./model/article.php";
 include_once "./model/restaurant.php";
 include_once "./model/file.php";
@@ -14,34 +15,54 @@ class RestaurantsController extends BaseController
         if($_SERVER['REQUEST_METHOD'] == 'POST')
         {
             $db = new DbHelper();
-            /*
+            
             $file = new File();
             $restaurant = new Restaurant();
-            // CREATE OBJECT
-            if(isset($_POST["title"]))
-                $article->setTitle($_POST["title"]);
-            if(isset($_POST["content"]))
-                $article->setContent($_POST["content"]);
-            if(isset($_POST["author"]))
-                $article->setAuthor($_POST["author"]);
-            if(isset($_POST["category"]))
-                $article->setCategory($_POST["category"]);
             
-            // SEND OBJECT TO DATABASE
-            $db->add($restaurant);
-            */
+            // CREATE OBJECT    
+            $restaurant->setCreatedById($this->getContext()->getAuthentication()->getId());
+            if(isset($_POST["name"]))
+                $restaurant->setName($_POST["name"]);
+            if(isset($_POST["city"]))
+                $restaurant->setCity($_POST["city"]);
+            if(isset($_POST["country"]))
+                $restaurant->setCountry($_POST["country"]);
+            if(isset($_POST["line"]))
+                $restaurant->setLine($_POST["line"]);
+            if(isset($_POST["number"]))
+                $restaurant->setNumber($_POST["number"]);
             
-            if(isset($_FILES["image"]))
+            // CALL MAP HELPER TO FIND LAT & LON
+            //  Rue de Diekirch 41, Arlon, Belgique
+            $location = $restaurant->getLine() . " " . $restaurant->getNumber() . ", " . $restaurant->getCity() . ", " . $restaurant->getCountry();
+            $mapHelper = new MapHelper();
+            $result = $mapHelper->geocodeAddress($location);
+            $restaurant->setLocation($location);
+            if(isset($result))
+            {
+                $restaurant->setLat($result->lat);
+                $restaurant->setLon($result->lon);
+            }
+            else 
+            {
+                $message = new Message("Create Restaurant", "Location not found!", MessageStatus::Warning);
+            }
+                        
+            if(isset($_FILES["image"]) && $_FILES["image"]["tmp_name"] != null)
             {
                 $image = $_FILES["image"];
                 $file = new File();
                 $file->setType($image["type"]);
-                $file->setContent(addslashes(file_get_contents($image["tmp_name"])));
+                $file->setContent(file_get_contents($image["tmp_name"]));
                                 
                 $db = new DbHelper();
-                $db->add($file);  
+                $fileId = $db->insertFile($file);  
+                if($fileId != 0)
+                    $restaurant->setImageId($fileId);
             }
 
+            // SEND OBJECT TO DATABASE
+            $db->saveRestaurant($restaurant);
 
             // REDIRECT USER TO LIST
             header('Location: /restaurants/list');
@@ -53,11 +74,11 @@ class RestaurantsController extends BaseController
 
     function readAction()
     {   
-        $article = new Article();
-        $helper = new DbHelper();
+        $restaurant = new Restaurant();
+        $db = new DbHelper();
 
         if($this->getContext()->getFilter()->getId() != null) {
-            $restaurant = $helper->retrieve("restaurants", $this->getContext()->getFilter()->getId());                
+            $restaurant = $db->retrieve("restaurants", $this->getContext()->getFilter()->getId());                
         } else {
             // REDIRECT USER TO LIST
             header('Location: /restaurants/list');
@@ -70,34 +91,49 @@ class RestaurantsController extends BaseController
 
     function updateAction()
     {  
-        $article = new Article();
+        $restaurant = new Restaurant();
         $db = new DbHelper();
 
-        if(isset($_POST["article"]))
+        if(isset($_POST["restaurant"]))
         {
             // CREATE OBJECT
             // TODO GET INT FROM FILTER AND CHECK IF EXISTING OBJECT
-            if($this->getContext()->getFilter()->getId() != null)
-                $article->setId($this->getContext()->getFilter()->getId());
-            if(isset($_POST["title"]))
-                $article->setTitle($_POST["title"]);
-            if(isset($_POST["content"]))
-                $article->setContent($_POST["content"]);
-            if(isset($_POST["author"]))
-                $article->setAuthor($_POST["author"]);
-            if(isset($_POST["category"]))
-                $article->setCategory($_POST["category"]);
+            $restaurant = $db->retrieve('restaurants', $this->getContext()->getFilter()->getId());
+            if(isset($_POST["name"]))
+                $restaurant->setName($_POST["name"]);
+            if(isset($_POST["city"]))
+                $restaurant->setCity($_POST["city"]);
+            if(isset($_POST["country"]))
+                $restaurant->setCountry($_POST["country"]);
+            if(isset($_POST["line"]))
+                $restaurant->setLine($_POST["line"]);
+            if(isset($_POST["number"]))
+                $restaurant->setNumber($_POST["number"]);
             
-            // SEND OBJECT TO DATABASE
-            if($article->getId() ==null)
+            if(isset($_FILES["image"]) && $_FILES["image"]["tmp_name"] != null)
             {
-                $db->add($article);
-            }
-            else
-            {
-                $db->update($article, $article->getId());
+                $image = $_FILES["image"];
+                $file = new File();
+                $file->setType($image["type"]);
+                $file->setContent(file_get_contents($image["tmp_name"]));
+                                
+                $db = new DbHelper();
+                $fileId = $db->insertFile($file);  
+                $oldFileId = $restaurant->getImageId();
+                if($fileId != 0)
+                {
+                    $restaurant->setImageId($fileId);
+                }
             }
 
+            // SEND OBJECT TO DATABASE
+            $db->saveRestaurant($restaurant, $restaurant->getId());
+
+            // REMOVE OLD FILE
+            if($fileId != 0 && $oldFileId != null)
+            {
+                $db->delete('files', $oldFileId);
+            }
             // REDIRECT USER TO LIST
             header('Location: /restaurants/list');
             die();
@@ -106,17 +142,20 @@ class RestaurantsController extends BaseController
         if($this->getContext()->getFilter()->getId() != null)
         {
             $id = $this->getContext()->getFilter()->getId();
-            $article = $db->retrieve("articles", $id);
+            $restaurant = $db->retrieve("restaurants", $id);
         }
 
-        $this->getContext()->setAttribute("article", $article);
+        $this->getContext()->setAttribute("restaurant", $restaurant);
         include_once "./view/restaurants/create.php";
     }
 
     function deleteAction()
     {
         $db = new DbHelper();
-        $db->delete("articles", $this->getContext()->getFilter()->getId());
+        $restaurant = $db->retrieve("restaurants", $this->getContext()->getFilter()->getId());
+        $db->delete("restaurants", $this->getContext()->getFilter()->getId());
+        if($restaurant->getImage() != null)
+            $db->delete("files", $restaurant->getImage()->getId());
         
         // REDIRECT USER TO LIST
         header('Location: /restaurants/list');
@@ -132,6 +171,39 @@ class RestaurantsController extends BaseController
         $this->getContext()->setAttribute("restaurants", $restaurants);
 
         include_once "./view/restaurants/list.php";
+    }
+
+    function viewAction()
+    {
+        $dbHelper = new DbHelper();
+        $mapHelper = new MapHelper();
+
+        $location = $this->getContext()->getFilter()->getFilter("location");
+        $number = ($this->getContext()->getFilter()->getFilter("number") != null) ? $this->getContext()->getFilter()->getFilter("number") : 3;
+
+
+        if($location == null || $location == "") 
+            $location = "Arlon, Belgique";
+
+        if(ISSET($location) && $location!= "")
+        {
+            
+            $oLocation = $mapHelper->geocodeAddress($location);
+            if($oLocation == null)
+            {
+                $this->getContext()->setMessage(new Message("", "Location Not Found !", MessageStatus::Error));
+            }
+            else 
+            {
+                $this->getContext()->setAttribute("location", $oLocation);
+                $sql = "CALL getRestaurantNearby($oLocation->lat, $oLocation->lon, $number)";
+                $query = $dbHelper->db->query($sql);
+                $query->setFetchMode(PDO::FETCH_CLASS, 'Restaurant');
+                $restaurants = $query->fetchAll();
+                $this->getContext()->setAttribute("restaurants", $restaurants);
+            }
+        }
+        include_once "./view/restaurants/view.php";
     }
 
     function defaultAction()

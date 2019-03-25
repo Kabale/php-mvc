@@ -1,4 +1,5 @@
 <?php
+    include_once "./helper/DbHelper.php";
     include_once "./controller/_controller.php";
     include_once "./model/user.php";
     include_once "./model/core/message.php";
@@ -21,6 +22,8 @@
         }
 
         function logupAction() {
+
+            $db = new DbHelper();
 
             $password_err = "";
             $username_err = "";
@@ -53,9 +56,9 @@
                     $user = new User();
                     $user->setUsername($_POST["username"]);
                     $user->setPassword($_POST["password"]);
-                    if(!$user->isExisting())
+                    if($db->isExistingUser($user))
                     {
-                        $user->save();
+                        $db->add($user);
                         $message = new Message("", "User ".$_POST["username"]." successfully created!", MessageStatus::Success);
                         $message->setMessage();
                         header('Location: /authentication/login');
@@ -77,6 +80,7 @@
 
         function loginAction() {
           
+            $db = new DbHelper();
             $lastUrl = "";
             $username ="";
             $password_err = "";
@@ -84,16 +88,12 @@
             
             if(isset($_POST["username"]) && $_POST["username"] != "" && isset($_POST["password"]) && $_POST["password"] != "")
             {
-                $user = new User();
-                $user->setUsername($_POST["username"]);
-                $user->setPassword($_POST["password"]);
-
-                $user = $user->isValid();
+                $user = $db->isValidUser($_POST["username"], $_POST["password"]);
                 if($user != null) {
                     $message = new Message("", "You are successfuled authenticated", MessageStatus::Success);
                     $message->setMessage();
 
-                    $_SESSION["authentication"] = true;
+                    $_SESSION["authentication"] = $user;
                     header('Location: /home');
                     die();
                 }

@@ -22,15 +22,14 @@
         private $createdById;
         private $creationDate;
         private $updateDate;
+
+        private $distance = null;
         
         public function getId(): ?int
         {
         return $this->id;
         }
-        public function getName(): string
-        {
-        return $this->name;
-        }
+        
         public function getImage(): ? File
         {
             if($this->image == null && $this->imageId != null) 
@@ -230,7 +229,7 @@
         /**
          * Get the value of imageId
          */ 
-        public function getImageId() :int
+        public function getImageId() : ?int
         {
             return $this->imageId;
         }
@@ -245,5 +244,45 @@
             $this->imageId = $imageId;
 
             return $this;
+        }
+
+        /**
+         * Get the value of name
+         */ 
+        public function getName()
+        {
+                return $this->name;
+        }
+
+        /**
+         * Set the value of name
+         *
+         * @return  self
+         */ 
+        public function setName($name)
+        {
+                $this->name = $name;
+
+                return $this;
+        }
+
+        /**
+         * Get the value of distance
+         */ 
+        public function getDistance()
+        {
+                return number_format((float)$this->distance, 2, '.', '');
+        }
+
+        /**
+         * Set the value of distance
+         *
+         * @return  self
+         */ 
+        public function setDistance($distance)
+        {
+                $this->distance = $distance;
+
+                return $this;
         }
     }

@@ -1,8 +1,8 @@
 <?php
-    include_once "./model/_model.php";
 
-    class Article extends BaseModel {
 
+    class Article 
+    {
         private $id;
         private $title;
         private $content;

@@ -1,15 +1,24 @@
 <?php
     include_once "./controller/_controller.php";
+    include_once "./controller/restaurants.php";
     include_once "./helper/MapHelper.php";
     
     class HomeController extends BaseController 
     {
         function defaultAction()
         {
-            $location = urldecode($this->getContext()->getFilter()->getFilter("location"));
+            $dbHelper = new DbHelper();
+            $mapHelper = new MapHelper();
+
+            $location = $this->getContext()->getFilter()->getFilter("location");
+            $number = ($this->getContext()->getFilter()->getFilter("number") != null) ? $this->getContext()->getFilter()->getFilter("number") : 3;
+
+            if($location == null || $location == "") 
+                $location = "Arlon, Belgique";
+
             if(ISSET($location) && $location!= "")
             {
-                $mapHelper = new MapHelper();
+                
                 $oLocation = $mapHelper->geocodeAddress($location);
                 if($oLocation == null)
                 {
@@ -18,6 +27,11 @@
                 else 
                 {
                     $this->getContext()->setAttribute("location", $oLocation);
+                    $sql = "CALL getRestaurantNearby($oLocation->lat, $oLocation->lon, $number)";
+                    $query = $dbHelper->db->query($sql);
+                    $query->setFetchMode(PDO::FETCH_CLASS, 'Restaurant');
+                    $restaurants = $query->fetchAll();
+                    $this->getContext()->setAttribute("restaurants", $restaurants);
                 }
             }
             include_once "./view/index.php";

@@ -134,7 +134,7 @@
     //TEST IMAGE
     echo "<br><br>TEST CALL TO STORE PROC<br>";
     $db = new DbHelper();
-    $file = $db->retrieve("files", 9);
+    $file = $db->retrieve("files", 13);
     if($file != null)
     {
        echo "File ID = ".$file->getId();

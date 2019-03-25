@@ -1,3 +1,24 @@
 .help-block {
     color: red;
 }
+
+.thumbnail {
+    padding: 5px;
+    margin: 10px;
+    line-height: 1.42857143;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    -webkit-transition: border .2s ease-in-out;
+    -o-transition: border .2s ease-in-out;
+    transition: border .2s ease-in-out;
+}
+
+.thumbnail .caption {
+    padding: 9px;
+    color: #333;
+}
+
+.thumbnail-img {
+    max-width: 320px;
+}

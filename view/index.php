@@ -11,57 +11,38 @@
             <input id="location" type="text" class="form-control" placeholder="Enter your location" aria-label="" aria-describedby="basic-addon1" onkeypress="keyEnter(event)">
         </div>
 
-
         <div class="col-xs-12">
             <div id="map" style="width: 100%; height: 530px;"></div>
-            <div id="lon" style="display:none;"><?php if($this->getContext()->getAttribute("location") != null): ?> <?=$this->getContext()->getAttribute("location")->lat?> <?php else:?>49.6833300<?php endif?></div> 
-            <div id="lat" style="display:none;"><?php if($this->getContext()->getAttribute("location") != null): ?> <?=$this->getContext()->getAttribute("location")->lon?> <?php else:?>5.8166700<?php endif?></div>
+            <div id="lon" style="display:none;"><?php if($this->getContext()->getAttribute("location") != null): ?> <?=$this->getContext()->getAttribute("location")->lon?> <?php else:?>49.6833300<?php endif?></div> 
+            <div id="lat" style="display:none;"><?php if($this->getContext()->getAttribute("location") != null): ?> <?=$this->getContext()->getAttribute("location")->lat?> <?php else:?>5.8166700<?php endif?></div>
+        </div>
+
+        <div id="restaurant">
+            <?php $count = 0; ?>
+            <?php foreach($this->getContext()->getAttribute("restaurants") as $restaurant): ?>
+                <?php if($count % 3 == 0) : ?></div><div class="d-flex"><?php endif?>        
+                    <div class="p-2 flex-fill thumbnail">
+                        <a href="/restaurants/read/<?= $restaurant->getId() ?>">
+                            <?php if($restaurant->getImage() != null) : ?>
+                                <img class="thumbnail-img" src="data:<?=$restaurant->getImage()->getType()?>;base64,<?=base64_encode($restaurant->getImage()->getContent())?>" />
+                            <?php else : ?>
+                                <img class="thumbnail-img" src="/public/img/restaurant.jpg">
+                            <?php endif ?>
+                            <div class="caption">
+                                <h4 class="name"><?= $restaurant->getName() ?></h4>
+                                <p><?= $restaurant->getLocation() ?></p>
+                                <p><?= $restaurant->getDistance() . "Km" ?></p>
+                                <div class="lat"><?= $restaurant->getLat() ?></div>
+                                <div class="lon"><?= $restaurant->getLon() ?></div>
+                            </div>
+                        </a>
+                    </div>       
+                <?php $count += 1 ?>
+            <?php endforeach ?>
         </div>
     </div>
     
-    <script>
-        window.onload = function() {
-            L.mapquest.key = 'lYrP4vF3Uk5zgTiGGuEzQGwGIVDGuy24';
-
-            var lon = document.getElementById('lon').innerText;
-            var lat = document.getElementById('lat').innerText;
-
-            var map = L.mapquest.map('map', {
-                center: [lon, lat],
-                layers: L.mapquest.tileLayer('map'),
-                zoom: 16
-            });
-
-            L.marker([lon, lat],{
-                icon: L.mapquest.icons.marker(),
-                draggable: false
-            }).bindPopup('you are here!').addTo(map);
-
-            /*
-            SAMPLE USAGE OF CUSTOM ICONS
-            var icon = 'https://assets.mapquestapi.com/icon/v2/flag-red-help!-lg.json';
-            $.getJSON(icon, function(json){
-                var LeafIcon = L.icon(json);
-                L.marker([parseFloat(lon) + 0.002, parseFloat(lat) + 0.002], {icon: LeafIcon}).bindPopup("I'm a custom icon using " + icon).addTo(map);
-            });
-            */
-
-            map.addControl(L.mapquest.control());
-
-            $('.icon').svgInject();
-        };
-
-        btnSearch = function() {
-            window.location.href='/home?location=' + encodeURI(document.getElementById('location').value);
-        };
-
-        keyEnter = function(event) {  
-            if(event.keyCode == 13) {
-                btnSearch();
-            } 
-        };
-    </script>
-
+    <script src="/public/js/script_home.js"></script>
 <?php
     $content = ob_get_clean();
     include_once "./view/template.php";

@@ -15,11 +15,11 @@
     <link rel="icon" href="/public/img/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="/public/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="/public/css/style.css"/>
-    <link rel="stylesheet" type="text/css" href="/public/css/mapquest.css"/>
-    
+    <link rel="stylesheet" type="text/css" href="/public/css/leaflet.css"/>
+
     <script src="/public/js/jquery3.3.1.min.js"></script>
     <script src="/public/js/bootstrap.min.js"></script>
-    <script src="/public/js/mapquest.js"></script>
+    <script src="/public/js/leaflet.js"></script>
 </head>
 <body>
     <header>

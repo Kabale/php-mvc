@@ -1,7 +1,6 @@
 <?php
-    include_once "./model/_model.php";
-
-    class File extends BaseModel{
+    class File 
+    {
         private $id;
         private $content;
         private $type;

@@ -27,7 +27,7 @@
 
             $json = $this->callAPI("GET", $url, $data);
             $array = json_decode($json);
-            if(count($array) > 0)
+            if($array != null && count($array) > 0)
                 return $array[0];
             else
                 return null;
