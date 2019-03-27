@@ -40,7 +40,10 @@ window.onload = function() {
     }
 
     shelterMarkers.addTo(map);
-    map.fitBounds(shelterMarkers.getBounds());
+    
+    setTimeout(function() {
+        map.fitBounds(shelterMarkers.getBounds());
+    },100);
 };
         
 var btnSearch = function() {

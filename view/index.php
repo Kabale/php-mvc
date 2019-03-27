@@ -32,8 +32,8 @@
                                 <h4 class="name"><?= $restaurant->getName() ?></h4>
                                 <p><?= $restaurant->getLocation() ?></p>
                                 <p><?= $restaurant->getDistance() . "Km" ?></p>
-                                <div class="lat"><?= $restaurant->getLat() ?></div>
-                                <div class="lon"><?= $restaurant->getLon() ?></div>
+                                <div class="lat" style="display:none;"><?= $restaurant->getLat() ?></div>
+                                <div class="lon" style="display:none;"><?= $restaurant->getLon() ?></div>
                             </div>
                         </a>
                     </div>       
