@@ -1,4 +1,6 @@
 <?php
+    namespace kab\model\core;
+
     include_once "./model/enum/_enum.php";
 
     abstract class MessageStatus extends BaseEnum

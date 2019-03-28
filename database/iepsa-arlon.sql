@@ -49,12 +49,11 @@ CREATE TABLE restaurants (
     createdById INT NOT NULL,
     imageId INT,
     creationDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updateDate DATETIME ON UPDATE CURRENT_TIMESTAMP
+    updateDate DATETIME ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (createdById) REFERENCES users(id),
     FOREIGN KEY (imageId) REFERENCES files(id)
 );
 
--------------------------------------------------------
 -- PROCEDURE TO RETRIEVE RESTAURANT NEARBY
 -- fLat AND fLon = coordonnees
 -- iNbr = number of returned restaurant
@@ -63,8 +62,9 @@ DROP PROCEDURE IF EXISTS getRestaurantNearby;
 DELIMITER $$
 CREATE PROCEDURE getRestaurantNearby(IN fLat float, IN fLon float, IN iNbr int)
 BEGIN 
-SELECT id, name, location, lat, lon, imageId, getDistance(lat,lon,fLat, fLon) distance FROM restaurants ORDER BY distance LIMIT iNbr;
+SELECT id, name, location, lat, lon, imageId, getDistance(lat,lon,fLat,fLon) distance FROM restaurants ORDER BY distance LIMIT iNbr;
 END $$
+DELIMITER;
 
 -- FUNCTION TO GET THE DISTANCE BETWEEN TWO COORDONNEES
 -- Lat1 AND Lon1 = first coordonnee
@@ -92,7 +92,7 @@ END $$
 
 GRANT EXECUTE ON PROCEDURE iepsa_arlon.getRestaurantNearby TO 'iepsa_user'@'localhost';
 GRANT EXECUTE ON FUNCTION iepsa_arlon.getDistance TO 'iepsa_user'@'localhost';
-
+DELIMITER;
 -----------------------------------------------------------
 -- SAMPLE CALL TO STORED PROC
 -- CALL getRestaurantNearby(49.83333, 5.7333, 3)

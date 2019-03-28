@@ -1,8 +1,14 @@
 <?php
+    namespace kab\controller;
+    
     include_once "./helper/DbHelper.php";
     include_once "./controller/_controller.php";
     include_once "./model/user.php";
     include_once "./model/core/message.php";
+    
+    use \kab\helper as Helper;
+    use \kab\model as Model;
+    use \kab\model\core as Core;
 
     class AuthenticationController extends BaseController 
     {
@@ -23,7 +29,7 @@
 
         function logupAction() {
 
-            $db = new DbHelper();
+            $db = new Helper\DbHelper();
 
             $password_err = "";
             $username_err = "";
@@ -53,20 +59,20 @@
 
                 if($password_err == "" && $username_err == "" && $confirm_password_err == "")
                 {
-                    $user = new User();
+                    $user = new Model\User();
                     $user->setUsername($_POST["username"]);
                     $user->setPassword($_POST["password"]);
                     if($db->isExistingUser($user))
                     {
                         $db->add($user);
-                        $message = new Message("", "User ".$_POST["username"]." successfully created!", MessageStatus::Success);
+                        $message = new Core\Message("", "User ".$_POST["username"]." successfully created!", Core\MessageStatus::Success);
                         $message->setMessage();
                         header('Location: /authentication/login');
                         die();
                     }
                     else 
                     {   
-                        $message = new Message("", "User with name ".$_POST["username"]." already exist!", MessageStatus::Error);
+                        $message = new Core\Message("", "User with name ".$_POST["username"]." already exist!", Core\MessageStatus::Error);
                         $message->setMessage();
                         header('Location: /authentication/logup');
                         die();
@@ -80,7 +86,7 @@
 
         function loginAction() {
           
-            $db = new DbHelper();
+            $db = new Helper\DbHelper();
             $lastUrl = "";
             $username ="";
             $password_err = "";
@@ -90,7 +96,7 @@
             {
                 $user = $db->isValidUser($_POST["username"], $_POST["password"]);
                 if($user != null) {
-                    $message = new Message("", "You are successfuled authenticated", MessageStatus::Success);
+                    $message = new Core\Message("", "You are successfuled authenticated", Core\MessageStatus::Success);
                     $message->setMessage();
 
                     $_SESSION["authentication"] = $user;
@@ -99,7 +105,7 @@
                 }
                 else
                 {
-                    $message = new Message("", "Invalid username or password", MessageStatus::Error);
+                    $message = new Core\Message("", "Invalid username or password", Core\MessageStatus::Error);
                     $message->setMessage();
                     header('Location: /authentication/login');
                     die();
@@ -121,7 +127,7 @@
         }
         
         function logoutAction() {
-            $message = new Message("", "You have been logged out successfully.", MessageStatus::Success);
+            $message = new Core\Message("", "You have been logged out successfully.", Core\MessageStatus::Success);
             $message->setMessage();
 
             if(!isset($_SESSION)){session_start();}

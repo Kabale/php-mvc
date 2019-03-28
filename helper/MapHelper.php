@@ -1,4 +1,6 @@
 <?php
+    namespace kab\helper;
+
     class MapHelper
     {
         //https://developer.mapquest.com/documentation/open/nominatim-search/search/

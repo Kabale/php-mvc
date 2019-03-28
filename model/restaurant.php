@@ -1,7 +1,12 @@
 <?php
+    namespace kab\model;
+    
     include_once "./model/user.php";
     include_once "./model/file.php";
-    
+
+    use \kab\helper as Helper;
+    use \kab\model as Model;
+
     class Restaurant
     {  
         private $id;
@@ -34,7 +39,7 @@
         {
             if($this->image == null && $this->imageId != null) 
             {
-                $db = new DbHelper();
+                $db = new Helper\DbHelper();
                 $this->image = $db->retrieve("files", $this->imageId);
             }
             return $this->image;
@@ -43,7 +48,7 @@
         {
             if($this->createdBy == null && $this->createdById != null)
             {
-                $db = new DbHelper();
+                $db = new Helper\DbHelper();
                 $this->createdBy = $db->retrieve("users", $this->createdById);
             }
             return $this->createdBy;

@@ -1,4 +1,6 @@
 <?php
+    namespace kab\model\core;
+
     abstract class BaseEnum {
         private static $constCacheArray = NULL;
 
@@ -8,7 +10,7 @@
             }
             $calledClass = get_called_class();
             if (!array_key_exists($calledClass, self::$constCacheArray)) {
-                $reflect = new ReflectionClass($calledClass);
+                $reflect = new \ReflectionClass($calledClass);
                 self::$constCacheArray[$calledClass] = $reflect->getConstants();
             }
             return self::$constCacheArray[$calledClass];

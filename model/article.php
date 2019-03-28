@@ -1,5 +1,5 @@
 <?php
-
+    namespace kab\model;
 
     class Article 
     {

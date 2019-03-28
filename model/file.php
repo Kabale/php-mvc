@@ -1,4 +1,6 @@
 <?php
+    namespace kab\model;
+    
     class File 
     {
         private $id;

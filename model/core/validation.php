@@ -1,6 +1,10 @@
 <?php
+    namespace kab\model\core;
+    
     include_once "./helper/DbHelper.php";
     include_once "./model/core/error.php";
+
+    use \kab\Helper as Helper;
 
     class validation
     {
@@ -9,7 +13,7 @@
                 
         function __constructor($modelName, $object)
         {
-            $dbHelper = new DbHelper();
+            $dbHelper = new Helper\DbHelper();
             $rows = $dbHelper->getFieldInformation($modelName);
             $rows->fetchAll();
 

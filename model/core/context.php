@@ -1,4 +1,6 @@
 <?php
+    namespace kab\model\core;
+    
     include_once "./model/core/message.php";
     include_once "./model/core/error.php";
     include_once "./model/core/filter.php";

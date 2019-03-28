@@ -15,11 +15,10 @@
     <link rel="icon" href="/public/img/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="/public/css/style.css"/>
     <link rel="stylesheet" type="text/css" href="/vendor/twbs/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="/vendor/bmatzner/leaflet-bundle/Bmatzner/LeafletBundle/Resources/public/css/leaflet.css"/>
-
+    
     <script src="/public/js/jquery3.3.1.min.js"></script>
     <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="/vendor/bmatzner/leaflet-bundle/Bmatzner/LeafletBundle/Resources/public/js/leaflet.js"></script>
+    
 </head>
 <body>
     <header>

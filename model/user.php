@@ -1,4 +1,5 @@
 <?php
+    namespace kab\model;
 
     class User 
     {

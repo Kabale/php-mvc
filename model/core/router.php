@@ -1,5 +1,9 @@
 <?php 
+    namespace kab\model\core;
+
     include_once './model/core/filter.php';
+    
+    use \kab\controller as Controller;
 
     class Router 
     {
@@ -11,7 +15,7 @@
             
             
             $controllerFile = "./controller/".$filter->getController().".php";
-            $controllerClass = ucfirst($filter->getController())."Controller";
+            $controllerClass = "kab\\controller\\".ucfirst($filter->getController())."Controller";
             $controllerAction = strtolower($filter->getAction())."Action";
         
             if(file_exists($controllerFile)) {
@@ -21,7 +25,6 @@
                 $controller = new $controllerClass($filter);
                 if(method_exists($controller, $controllerAction))
                 {
-
                     $controller->$controllerAction();
                 }
                 else
@@ -37,7 +40,7 @@
         private function routeError404($filter)
         {
             include_once "controller/home.php";
-            $controller = new HomeController($filter);
+            $controller = new Controller\HomeController($filter);
             $controller->error404Action();
         }
     }

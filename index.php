@@ -1,3 +1,5 @@
 <?php
+    namespace kab;
+    
     include_once "model/core/router.php";
-    $router = new Router($_SERVER['REQUEST_URI']);
+    $router = new model\core\Router($_SERVER['REQUEST_URI']);

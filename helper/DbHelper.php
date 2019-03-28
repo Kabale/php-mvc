@@ -1,5 +1,11 @@
 <?php
+    namespace kab\helper;
+    
     require_once "./model/core/message.php";
+    
+    use \PDO as PDO;
+    use \kab\model as Model;
+    use \kab\model\core as Core;
 
     class DbHelper
     {
@@ -19,9 +25,9 @@
             catch(PDOException $e)
             {
                 if($this->DEBUGMODE == true)
-                    $message = new Message("SQL ERROR", "__construct() : " . $e->getMessage(), MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "__construct() : " . $e->getMessage(), Core\MessageStatus::Error);
                 else
-                    $message = new Message("SQL ERROR", "Cannot connect to the sql database!", MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "Cannot connect to the sql database!", Core\MessageStatus::Error);
                 $message->setMessage();
             }
         }
@@ -46,15 +52,15 @@
             $sql = $sql. " WHERE id = $id";
             try {
                 $query = $this->db->query($sql);
-                $query->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, ucfirst($objectName));
+                $query->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, "kab\\model\\".ucfirst($objectName));
                 $result = $query->fetch();
             } 
             catch(PDOException $e)
             {
                 if($this->DEBUGMODE == true)
-                    $message = new Message("SQL ERROR", "Retrieve(" . $table . ", " . $id . ", " . $objectName . ") : " . $e->getMessage(), MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "Retrieve(" . $table . ", " . $id . ", " . $objectName . ") : " . $e->getMessage(), Core\MessageStatus::Error);
                 else
-                    $message = new Message("SQL ERROR", "Cannot retrieve " . $table . "!", MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "Cannot retrieve " . $table . "!", Core\MessageStatus::Error);
                 $message->setMessage();
             }
             return $result;
@@ -75,15 +81,15 @@
             {
                 $sql = "SELECT * FROM $table";
                 $query = $this->db->query($sql);
-                $query->setFetchMode(PDO::FETCH_CLASS, ucfirst($objectName));
+                $query->setFetchMode(PDO::FETCH_CLASS, "kab\\model\\".ucfirst($objectName));
                 $result = $query->fetchAll();
             }
             catch(PDOException $e)
             {
                 if($this->DEBUGMODE == true)
-                    $message = new Message("SQL ERROR", "RetrieveMultiple(" . $table . ", " . $objectName . ") : " . $e->getMessage(), MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "RetrieveMultiple(" . $table . ", " . $objectName . ") : " . $e->getMessage(), Core\MessageStatus::Error);
                 else
-                    $message = new Message("SQL ERROR", "Cannot retrieve " . $table . "!", MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "Cannot retrieve " . $table . "!", Core\MessageStatus::Error);
                 $message->setMessage();
             }
             return $result;
@@ -97,10 +103,11 @@
          */
         public function add($object, $table = null)
         {
-            $table = ($table == null) ? get_class($object) . "s" : $table;
+            $class = explode("\\",get_class($object));
+            $table = ($table == null) ? $class[count($class) - 1] . "s" : $table;
             $keys = [];
             $val = [];
-            $reflectionClass = new ReflectionClass(get_class($object));
+            $reflectionClass = new \ReflectionClass(get_class($object));
             $properties = $reflectionClass->getProperties();
             for($i=0; $i < count($properties); $i++)
             {
@@ -124,9 +131,9 @@
             }
             catch(PDOException $e) {
                 if($this->DEBUGMODE == true)
-                    $message = new Message("SQL ERROR", "RetrieveMultiple(" . $table . ", " . $objectName . ") : " . $e->getMessage(), MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "RetrieveMultiple(" . $table . ", " . $objectName . ") : " . $e->getMessage(), Core\MessageStatus::Error);
                 else
-                    $message = new Message("SQL ERROR", "Cannot retrieve " . $table . "!", MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "Cannot retrieve " . $table . "!", Core\MessageStatus::Error);
                 $message->setMessage();
             }
             return $this->db->lastInsertId();
@@ -139,9 +146,11 @@
          */
         public function update($object, $id, $table = null)
         {
-            $table = ($table == null) ? get_class($object) . "s" : $table;
+            $class = split(get_class($object), "\\");
+            $table = ($table == null) ? $class[count($class) - 1] . "s" : $table;
+            
             $val = [];
-            $reflectionClass = new ReflectionClass(get_class($object));
+            $reflectionClass = new \ReflectionClass(get_class($object));
             $properties = $reflectionClass->getProperties();
             for($i=0; $i < count($properties); $i++)
             {
@@ -163,9 +172,9 @@
             }
             catch(PDOException $e) {
                 if($this->DEBUGMODE == true)
-                    $message = new Message("SQL ERROR", "Update(" . $id . ", " . $table .") : " . $e->getMessage(), MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "Update(" . $id . ", " . $table .") : " . $e->getMessage(), Core\MessageStatus::Error);
                 else
-                    $message = new Message("SQL ERROR", "Cannot update " . $table . "!", MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "Cannot update " . $table . "!", Core\MessageStatus::Error);
                 $message->setMessage();
             }
         }
@@ -183,9 +192,9 @@
             }
             catch(PDOException $e) {
                 if($this->DEBUGMODE == true)
-                    $message = new Message("SQL ERROR", "delete(" . $table . ", " . $id . ") : " . $e->getMessage(), MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "delete(" . $table . ", " . $id . ") : " . $e->getMessage(), Core\MessageStatus::Error);
                 else
-                    $message = new Message("SQL ERROR", "Cannot delete " . $table . "!", MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "Cannot delete " . $table . "!", Core\MessageStatus::Error);
                 $message->setMessage();
             }
         }
@@ -203,9 +212,9 @@
             } 
             catch(PDOException $e) {
                 if($this->DEBUGMODE == true)
-                    $message = new Message("SQL ERROR", "getFieldInformation(" . $table . ") : " . $e->getMessage(), MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "getFieldInformation(" . $table . ") : " . $e->getMessage(), Core\MessageStatus::Error);
                 else
-                    $message = new Message("SQL ERROR", "Cannot get field information for the " . $table . "!", MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "Cannot get field information for the " . $table . "!", Core\MessageStatus::Error);
                 $message->setMessage();
             }
         }
@@ -218,18 +227,18 @@
             $result = null;
             try
             {
-                $dbHelper = new DbHelper();
-                $sql = "SELECT username FROM users WHERE username = '$user->getUsername()'";
-                $result = $dbHelper->db->query($sql);
-                $query->setFetchMode(PDO::FETCH_CLASS, "User");
+                $username = $user->getUserName();
+                $sql = "SELECT username FROM users WHERE username = '$username'";
+                $result = $this->db->query($sql);
+                $query->setFetchMode(PDO::FETCH_CLASS, "\\kab\\model\\User");
                 $result = $query->fetch();
             }
             catch(PDOException $e)
             {
                 if($this->DEBUGMODE == true)
-                    $message = new Message("SQL ERROR", "isExistingUser : " . $e->getMessage(), MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "isExistingUser : " . $e->getMessage(), Core\MessageStatus::Error);
                 else
-                    $message = new Message("SQL ERROR", "Error on user existing!", MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "Error on user existing!", Core\MessageStatus::Error);
                 $message->setMessage();
             }
 
@@ -238,28 +247,27 @@
 
         function saveUser($user)
         {
-            $dbHelper = new DbHelper();
             try
             { 
                 if($user->getId() == null)
                 {
                     // CREATE USER
-                    $sql = "INSERT INTO users(username, password) VALUES('$user->getUsername()',SHA2('$user->getPassword()', 256))";
-                    $dbHelper->db->query($sql);
+                    $sql = "INSERT INTO users(username, password) VALUES('$user->getUserName()',SHA2('$user->getPassword()', 256))";
+                    $this->db->query($sql);
                 }
                 else 
                 {
                     // UPDATE USER
                     $sql = "UPDATE users SET password = SHA2('$user->getPassword()', 256) WHERE id=$user->getId();";
-                    $dbHelper->db->query($sql);
+                    $this->db->query($sql);
                 }
             }
             catch(PDOException $e)
             {
                 if($this->DEBUGMODE == true)
-                    $message = new Message("SQL ERROR", "saveUser : " . $e->getMessage(), MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "saveUser : " . $e->getMessage(), Core\MessageStatus::Error);
                 else
-                    $message = new Message("SQL ERROR", "Error on user existing!", MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "Error on user existing!", Core\MessageStatus::Error);
                 $message->setMessage();
             }
 
@@ -270,14 +278,14 @@
          * @param string password 
          * @return bool
          */
-        public function isValidUser($username, $password) : ? User
+        public function isValidUser($username, $password) : ? Model\User
         {
             $result = null;
             try
             {
                 $sql ="SELECT * FROM users WHERE LOWER(username) = LOWER('$username') AND password = SHA2('$password', 256)";
                 $query = $this->db->query($sql);
-                $query->setFetchMode(PDO::FETCH_CLASS, "User");
+                $query->setFetchMode(PDO::FETCH_CLASS, "\\kab\\model\\User");
                 $result = $query->fetch();
                 if($result == false)
                     $result = null;
@@ -285,9 +293,9 @@
             }
             catch(PDOException $e) {
                 if($this->DEBUGMODE == true)
-                    $message = new Message("SQL ERROR", "isValidUser(" . $username . ") : " . $e->getMessage(), MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "isValidUser(" . $username . ") : " . $e->getMessage(), Core\MessageStatus::Error);
                 else
-                    $message = new Message("SQL ERROR", "Error on user validation!", MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "Error on user validation!", Core\MessageStatus::Error);
                 $message->setMessage();
             }
 
@@ -312,9 +320,9 @@
             }
             catch(PDOException $e) {
                 if($this->DEBUGMODE == true)
-                    $message = new Message("SQL ERROR", "insertFile : " . $e->getMessage(), MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "insertFile : " . $e->getMessage(), Core\MessageStatus::Error);
                 else
-                    $message = new Message("SQL ERROR", "Error on insert image!", MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "Error on insert image!", Core\MessageStatus::Error);
                 $message->setMessage();
             }
             return $result;
@@ -379,9 +387,30 @@
             }
             catch(PDOException $e) {
                 if($this->DEBUGMODE == true)
-                    $message = new Message("SQL ERROR", "saveRestaurant(" . $object->getName() . ") : " . $e->getMessage(), MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "saveRestaurant(" . $object->getName() . ") : " . $e->getMessage(), Core\MessageStatus::Error);
                 else
-                    $message = new Message("SQL ERROR", "Error on save restaurant!", MessageStatus::Error);
+                    $message = new Core\Message("SQL ERROR", "Error on save restaurant!", Core\MessageStatus::Error);
+                $message->setMessage();
+            }
+            return $result;
+        }
+
+        public function callRestaurants($oLocation, $number)
+        {
+            $result = null;
+            
+            try
+            {
+                $sql = "CALL getRestaurantNearby($oLocation->lat, $oLocation->lon, $number)";
+                $query = $this->db->query($sql);
+                $query->setFetchMode(PDO::FETCH_CLASS, '\\kab\\model\\Restaurant');
+                $result = $query->fetchAll();
+            }
+            catch(PDOException $e) {
+                if($this->DEBUGMODE == true)
+                    $message = new Core\Message("SQL ERROR", "getRestaurantNearby(" . $oLocation->lat . ", " . $oLocation->lon . ", " . $number . ") : " . $e->getMessage(), Core\MessageStatus::Error);
+                else
+                    $message = new Core\Message("SQL ERROR", "Error on save restaurant!", Core\MessageStatus::Error);
                 $message->setMessage();
             }
             return $result;

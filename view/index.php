@@ -41,7 +41,8 @@
             <?php endforeach ?>
         </div>
     </div>
-    
+    <link rel="stylesheet" type="text/css" href="/vendor/bmatzner/leaflet-bundle/Bmatzner/LeafletBundle/Resources/public/css/leaflet.css"/>
+    <script src="/vendor/bmatzner/leaflet-bundle/Bmatzner/LeafletBundle/Resources/public/js/leaflet.js"></script>
     <script src="/public/js/script_home.js"></script>
 <?php
     $content = ob_get_clean();

@@ -1,4 +1,6 @@
 <?php
+    namespace kab\model\core;
+    
     class Filter
     {
         private $controller = "home";
