@@ -224,14 +224,16 @@
         ///
         function isExistingUser($user): bool
         {
-            $result = null;
+            $result = false;
             try
             {
                 $username = $user->getUserName();
                 $sql = "SELECT username FROM users WHERE username = '$username'";
-                $result = $this->db->query($sql);
+                $query = $this->db->query($sql);
                 $query->setFetchMode(PDO::FETCH_CLASS, "\\kab\\model\\User");
-                $result = $query->fetch();
+                $user = $query->fetch();
+                $result = ($user == false) ? false : true;
+
             }
             catch(PDOException $e)
             {
@@ -251,8 +253,10 @@
             { 
                 if($user->getId() == null)
                 {
+                    $username = $user->getUserName();
+                    $password = $user->getPassword();
                     // CREATE USER
-                    $sql = "INSERT INTO users(username, password) VALUES('$user->getUserName()',SHA2('$user->getPassword()', 256))";
+                    $sql = "INSERT INTO users(username, password) VALUES('$username',SHA2('$password', 256))";
                     $this->db->query($sql);
                 }
                 else 

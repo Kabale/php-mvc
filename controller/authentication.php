@@ -62,9 +62,9 @@
                     $user = new Model\User();
                     $user->setUsername($_POST["username"]);
                     $user->setPassword($_POST["password"]);
-                    if($db->isExistingUser($user))
+                    if(!$db->isExistingUser($user))
                     {
-                        $db->add($user);
+                        $db->saveUser($user);
                         $message = new Core\Message("", "User ".$_POST["username"]." successfully created!", Core\MessageStatus::Success);
                         $message->setMessage();
                         header('Location: /authentication/login');

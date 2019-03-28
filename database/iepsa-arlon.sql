@@ -5,7 +5,7 @@ CREATE DATABASE iepsa_arlon CHARACTER SET UTF8 COLLATE utf8_bin;
 USE iepsa_arlon;
 
 -- CREATE USER AND GRANT ACCESS TO DATABASE
-CREATE USER 'iepsa_user'@'localhost' IDENTIFIED BY 'ZHeg5X0Ti12244Fk';
+CREATE USER IF NOT EXISTS 'iepsa_user'@'localhost' IDENTIFIED BY 'ZHeg5X0Ti12244Fk';
 GRANT SELECT, INSERT, DELETE, UPDATE ON iepsa_arlon.* TO 'iepsa_user'@'localhost';
 FLUSH PRIVILEGES;
 
@@ -72,27 +72,25 @@ DELIMITER;
 DROP FUNCTION IF EXISTS getDistance
 
 DELIMITER $$
-CREATE FUNCTION getDistance (Lat1 FLOAT, Lon1 FLOAT, Lat2 FLOAT, Lon2 FLOAT) RETURNS FLOAT 
-AS
+CREATE DEFINER=`root`@`localhost` FUNCTION `getDistance`(Lat1 FLOAT, Lon1 FLOAT, Lat2 FLOAT, Lon2 FLOAT) RETURNS float
+    DETERMINISTIC
 BEGIN
-    DECLARE @EarthRadius int,
-    DECLARE @dLat float;    
-    DECLARE @dLon float;
-    DECLARE @a float;
-    DECLARE @b float;
+    DECLARE EarthRadius int;
+    DECLARE dLat float;    
+    DECLARE dLon float;
+    DECLARE a float;
+    DECLARE b float;
 
-    SET @EarthRadius = 6371;
-    SET @dLat = (Lat1 - Lat2) * PI()/180;
-    SET @dLon = (Lon1 - Lon2) * PI()/180;
+    SET EarthRadius = 6371;
+    SET dLat = (Lat1 - Lat2) * PI()/180;
+    SET dLon = (Lon1 - Lon2) * PI()/180;
 
-    SET @a = POW(SIN(@dLat/2),2) + COS(Lat1 * PI()/180) * COS(Lat2*PI() / 180) * POW(SIN(@dLon/2),2);
-    SET @b = 2* ATAN2(SQRT(@a), SQRT(1-@a));
-    RETURN @EarthRadius * @b;
-END $$
+    SET a = POW(SIN(dLat/2),2) + COS(Lat1 * PI()/180) * COS(Lat2*PI() / 180) * POW(SIN(dLon/2),2);
+    SET b = 2* ATAN2(SQRT(a), SQRT(1-a));
+    RETURN EarthRadius * b;
+END$$
+DELIMITER ;
 
 GRANT EXECUTE ON PROCEDURE iepsa_arlon.getRestaurantNearby TO 'iepsa_user'@'localhost';
 GRANT EXECUTE ON FUNCTION iepsa_arlon.getDistance TO 'iepsa_user'@'localhost';
-DELIMITER;
------------------------------------------------------------
--- SAMPLE CALL TO STORED PROC
--- CALL getRestaurantNearby(49.83333, 5.7333, 3)
+
